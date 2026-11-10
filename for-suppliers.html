@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — For suppliers</title>
+  <meta name="description" content="Trends is a Pakistan COD dropshipping platform prototype for verified suppliers and store-based resellers." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="./brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="./css/app.css" />
+  
+</head>
+<body data-layout="public" data-page="suppliers" class="bg-paper text-ink">
+  <div id="site-nav"></div>
+  <main class="max-w-5xl mx-auto px-4 py-16">
+    <p class="kicker">For brands and wholesalers</p>
+    <h1 class="font-display text-4xl mt-2">Put your warehouse in front of Pakistan stores — without giving up MAP.</h1>
+    <p class="mt-4 text-lg text-muted max-w-2xl">Verified suppliers list once. Hundreds of resellers can import your catalog and ads. You pack on a 24h or 48h SLA. We collect COD and pay you after delivery.</p>
+    <a class="btn-primary mt-6" href="auth/signup.html">Apply as a supplier</a>
+    <div class="grid md:grid-cols-2 gap-4 mt-12">
+      <div class="card p-6"><h3 class="font-semibold">Vetting, not an open catalog</h3><p class="text-sm text-muted mt-2">CNIC / NADRA-style checks where available, NTN, bank verification, and warehouse photos. Ongoing scores for dispatch, defects, and listing accuracy. We do not claim sample labs we do not run yet.</p></div>
+      <div class="card p-6"><h3 class="font-semibold">Wholesale + MAP</h3><p class="text-sm text-muted mt-2">Every reseller sees the same wholesale and the same minimum advertised price. Undercutting is a health violation, not a growth tactic.</p></div>
+      <div class="card p-6"><h3 class="font-semibold">Pack queue with SLA timers</h3><p class="text-sm text-muted mt-2">Orders arrive only after buyer confirmation. Print the label, hand to the booked courier, scan. Late handover is measured and enforced automatically.</p></div>
+      <div class="card p-6"><h3 class="font-semibold">Payouts after delivery</h3><p class="text-sm text-muted mt-2">Weekly to bank, Raast, JazzCash, or Easypaisa. Holds are always linked to an Account Health event you can appeal with a Plan of Action.</p></div>
+    </div>
+    <div class="card p-6 mt-10">
+      <h2 class="font-display text-2xl">Healthy targets (proposed)</h2>
+      <ul class="mt-3 text-sm space-y-1 text-muted">
+        <li>On-time dispatch ≥ 96%</li>
+        <li>Cancellation / stock-out after accept &lt; 2.5%</li>
+        <li>Defect or wrong item &lt; 1.5%</li>
+        <li>Supplier-attributable returns &lt; 5%</li>
+        <li>Ticket response within 12 hours ≥ 90%</li>
+      </ul>
+      <a class="btn-ghost btn-sm mt-4" href="supplier/account-health.html">Preview a demo Account Health page</a>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+
+  <script src="./js/data.js"></script>
+  <script src="./js/ui.js"></script>
+  <script src="./js/layout.js"></script>
+  
+
+<script>document.title = BRAND.name + " — For suppliers";</script>
+</body></html>

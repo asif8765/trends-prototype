@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Catalog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="reseller" data-page="catalog" class="bg-paper text-ink">
+  <div id="app-shell" class="app-shell">
+    <div class="flex-1 min-w-0 flex flex-col">
+      <main id="app-main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl w-full mx-auto">
+        
+<div class="flex items-end justify-between gap-4 flex-wrap">
+  <div>
+    <p class="kicker">Reseller catalog</p>
+    <h1 class="font-display text-3xl mt-1">Find products to import</h1>
+    <p class="text-sm text-muted mt-1">Wholesale, MAP, courier estimate, door price, and profit — demo data only.</p>
+  </div>
+</div>
+<div class="card p-4 mt-5 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+  <input id="q" placeholder="Search products or suppliers" />
+  <select id="cat"><option value="">All categories</option></select>
+  <select id="sla"><option value="">Any dispatch SLA</option><option>24h</option><option>48h</option></select>
+  <select id="health"><option value="">Any supplier health</option><option>Healthy</option><option>Warning</option></select>
+  <select id="video"><option value="">Any media</option><option value="video">Has video</option><option value="none">No video</option></select>
+  <button class="btn-primary" type="button" id="apply">Filter</button>
+</div>
+<div id="grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"></div>
+
+      </main>
+      <div id="site-footer"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+<script>
+  document.title = BRAND.name + " — Catalog";
+  var cats = Array.from(new Set(DEMO.products.map(function(p){return p.cat;})));
+  cats.forEach(function(c){ var o=document.createElement("option"); o.textContent=c; document.getElementById("cat").appendChild(o); });
+  function render(){
+    var q=document.getElementById("q").value.toLowerCase();
+    var cat=document.getElementById("cat").value;
+    var sla=document.getElementById("sla").value;
+    var h=document.getElementById("health").value;
+    var vid=document.getElementById("video").value;
+    var items=DEMO.products.filter(function(p){
+      var s=DEMO.supplierOf(p.supplier);
+      var hay=(p.name+" "+s.name+" "+p.cat).toLowerCase();
+      if(q && hay.indexOf(q)<0) return false;
+      if(cat && p.cat!==cat) return false;
+      if(sla && p.sla!==sla) return false;
+      if(h && s.health!==h) return false;
+      if(vid==="video" && !p.video) return false;
+      if(vid==="none" && p.video) return false;
+      return true;
+    });
+    document.getElementById("grid").innerHTML = items.map(function(p){
+      var s=DEMO.supplierOf(p.supplier);
+      var e=DEMO.door(p);
+      var chip = p.video ? '<span class="video-chip"><span class="cam"></span> Video</span>' : "";
+      return '<article class="card overflow-hidden flex flex-col">'+
+        '<div class="product-art" style="background:'+p.hue+'">'+chip+p.emoji+'</div>'+
+        '<div class="p-4 flex-1 flex flex-col">'+
+        '<div class="flex justify-between gap-2"><h2 class="font-semibold">'+p.name+'</h2><span class="badge badge-'+s.health+'">'+s.health+'</span></div>'+
+        '<p class="text-xs text-muted mt-1">'+s.name+' · '+p.sla+' · ★ '+p.rating+'</p>'+
+        '<dl class="grid grid-cols-2 gap-2 text-sm mt-3">'+
+        '<div><dt class="text-xs text-muted">Wholesale</dt><dd class="font-semibold">'+DEMO.pkr(p.wholesale)+'</dd></div>'+
+        '<div><dt class="text-xs text-muted">MAP</dt><dd class="font-semibold">'+DEMO.pkr(p.map)+'</dd></div>'+
+        '<div><dt class="text-xs text-muted">Courier est.</dt><dd>'+DEMO.pkr(p.courier)+'</dd></div>'+
+        '<div><dt class="text-xs text-muted">Profit at suggested</dt><dd class="font-semibold text-primary">'+DEMO.pkr(e.profit)+'</dd></div></dl>'+
+        '<p class="text-xs text-muted mt-2">Door price '+DEMO.pkr(e.door)+' · stock '+p.stock+'</p>'+
+        '<div class="mt-auto pt-3 flex gap-2">'+
+        '<a class="btn-ghost btn-sm flex-1" href="product.html?id='+p.id+'">View</a>'+
+        '<a class="btn-primary btn-sm flex-1" href="product.html?id='+p.id+'#import">Import</a></div></div></article>';
+    }).join("") || '<p class="text-muted">No products match those filters (demo catalog).</p>';
+  }
+  document.getElementById("apply").onclick=render;
+  document.getElementById("q").addEventListener("input", render);
+  render();
+</script>
+
+</body></html>

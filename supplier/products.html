@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Listings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="supplier" data-page="products" class="bg-paper text-ink">
+  <div id="app-shell" class="app-shell">
+    <div class="flex-1 min-w-0 flex flex-col">
+      <main id="app-main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl w-full mx-auto">
+        
+<div class="flex items-start justify-between gap-4 flex-wrap">
+  <div>
+    <p class="kicker">Supplier listings</p>
+    <h1 class="font-display text-3xl mt-1">Products</h1>
+    <p class="text-sm text-muted mt-1">MAP, stock sync, daily order caps, and product videos. Demo catalog for Lahore Home Goods.</p>
+  </div>
+  <button class="btn-primary" type="button" id="add-listing-btn">Add listing</button>
+</div>
+<p class="text-sm mt-4">Daily cap used: <strong id="cap"></strong></p>
+<div class="card mt-4"><div class="table-wrap"><table class="data" id="tbl"></table></div></div>
+
+<div id="listing-modal" class="modal-backdrop hidden">
+  <div class="modal modal-lg">
+    <div class="flex justify-between items-start gap-4">
+      <div>
+        <p class="kicker" id="listing-kicker">New listing</p>
+        <h2 class="font-display text-2xl" id="listing-title">Add listing</h2>
+      </div>
+      <button type="button" data-close-modal class="text-muted" aria-label="Close">✕</button>
+    </div>
+    <form id="listing-form" class="mt-4 space-y-4">
+      <input type="hidden" name="sku" id="listing-sku" />
+      <div class="grid sm:grid-cols-2 gap-3">
+        <div>
+          <label class="field" for="listing-name">Product name</label>
+          <input id="listing-name" name="name" required placeholder="e.g. 3-tier stainless tiffin" />
+        </div>
+        <div>
+          <label class="field" for="listing-sku-display">SKU</label>
+          <input id="listing-sku-display" name="skuDisplay" placeholder="TIF-3SS" />
+        </div>
+        <div>
+          <label class="field" for="listing-wholesale">Wholesale (PKR)</label>
+          <input id="listing-wholesale" name="wholesale" type="number" min="0" />
+        </div>
+        <div>
+          <label class="field" for="listing-map">MAP / min resale (PKR)</label>
+          <input id="listing-map" name="map" type="number" min="0" />
+        </div>
+        <div>
+          <label class="field" for="listing-stock">Stock</label>
+          <input id="listing-stock" name="stock" type="number" min="0" />
+        </div>
+        <div>
+          <label class="field" for="listing-cap">Daily order cap</label>
+          <input id="listing-cap" name="cap" type="number" min="0" />
+        </div>
+      </div>
+
+      <div class="card p-4" id="videos-block">
+        <h3 class="font-semibold">Videos</h3>
+        <p class="text-sm text-muted mt-1">Upload an mp4 or mov (up to 200 MB, 3 minutes) or paste a link to your own Facebook, Instagram, TikTok, or YouTube post. Trends saves its own copy so the listing still works if the original post is deleted.</p>
+
+        <label class="upload-tile mt-4 block" id="video-upload-tile" for="video-file">
+          <input id="video-file" name="videoFile" type="file" accept="video/mp4,video/quicktime" class="hidden" />
+          <div class="font-semibold">Drop a video or click to upload</div>
+          <div class="text-xs text-muted mt-1">mp4 or mov · max 200 MB · 3 minutes · transcoded to 720p / 1080p in a live build</div>
+          <div class="text-sm mt-2 font-medium" id="video-file-name">No file chosen (demo)</div>
+        </label>
+
+        <div class="mt-3">
+          <label class="field" for="social-link">Paste social link</label>
+          <input id="social-link" name="socialLink" placeholder="https://www.facebook.com/...  ·  Instagram, TikTok, or YouTube" />
+        </div>
+
+        <label class="rights-box mt-4">
+          <input type="checkbox" name="rights" id="video-rights" />
+          <span>I declare that I own the rights to this video, or have a license to grant reseller use on Trends, including the permissions I select below.</span>
+        </label>
+
+        <p class="text-xs font-semibold uppercase tracking-wide text-muted mt-4">Permissions per video</p>
+        <div class="grid sm:grid-cols-3 gap-2 mt-2">
+          <label class="perm-toggle">
+            <input type="checkbox" name="storeOk" id="perm-store" checked />
+            <span><strong>Allowed in reseller store</strong><br /><span class="text-xs text-muted">Import with the listing on Shopify or Woo.</span></span>
+          </label>
+          <label class="perm-toggle">
+            <input type="checkbox" name="adsOk" id="perm-ads" checked />
+            <span><strong>Allowed in paid ads</strong><br /><span class="text-xs text-muted">Resellers can download the ads kit.</span></span>
+          </label>
+          <label class="perm-toggle">
+            <input type="checkbox" name="watermark" id="perm-wm" />
+            <span><strong>Watermark required</strong><br /><span class="text-xs text-muted">Ads kit is not the clean file.</span></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button class="btn-primary flex-1" type="submit">Save listing</button>
+        <button class="btn-ghost" type="button" data-close-modal>Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+      </main>
+      <div id="site-footer"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+<script>
+  document.title = BRAND.name + " — Listings";
+  var s=DEMO.supplier;
+  document.getElementById("cap").textContent = s.usedCap + " / " + s.dailyCap + " orders today";
+
+  function videoCell(l){
+    if (!l.video) return "<span class='text-muted text-sm'>No video</span>";
+    var bits = [];
+    bits.push(l.video.storeOk ? "<span class='perm-badge ok'>Store OK</span>" : "<span class='perm-badge no'>Store no</span>");
+    bits.push(l.video.adsOk ? "<span class='perm-badge ok'>Ads OK</span>" : "<span class='perm-badge no'>Ads no</span>");
+    return "<div class='video-col'><span class='video-chip' style='position:static'><span class='cam'></span> "+l.video.duration+"</span>"+bits.join(" ")+"</div>";
+  }
+
+  function fillForm(l){
+    document.getElementById("listing-kicker").textContent = l ? "Edit listing" : "New listing";
+    document.getElementById("listing-title").textContent = l ? "Edit " + l.name : "Add listing";
+    document.getElementById("listing-sku").value = l ? l.sku : "";
+    document.getElementById("listing-sku-display").value = l ? l.sku : "";
+    document.getElementById("listing-name").value = l ? l.name : "";
+    document.getElementById("listing-wholesale").value = l ? l.wholesale : "";
+    document.getElementById("listing-map").value = l ? l.map : "";
+    document.getElementById("listing-stock").value = l ? l.stock : "";
+    document.getElementById("listing-cap").value = l ? l.cap : "";
+    document.getElementById("social-link").value = (l && l.video && l.video.socialLink) || "";
+    document.getElementById("video-file-name").textContent = (l && l.video)
+      ? (l.video.sourceLabel + (l.video.duration ? " · " + l.video.duration : "") + " (demo — no file hosted)")
+      : "No file chosen (demo)";
+    document.getElementById("video-rights").checked = !!(l && l.video);
+    document.getElementById("perm-store").checked = !l || !l.video || l.video.storeOk;
+    document.getElementById("perm-ads").checked = !l || !l.video || l.video.adsOk;
+    document.getElementById("perm-wm").checked = !!(l && l.video && l.video.watermarkRequired);
+    document.getElementById("video-file").value = "";
+  }
+
+  function openListing(sku){
+    var l = sku ? DEMO.listings.find(function(x){ return x.sku === sku; }) : null;
+    fillForm(l || null);
+    openModal("listing-modal");
+  }
+
+  document.getElementById("tbl").innerHTML = "<thead><tr><th>SKU</th><th>Name</th><th>Wholesale</th><th>MAP</th><th>Stock</th><th>Daily cap used</th><th>Video</th><th>Status</th><th></th></tr></thead><tbody>"+
+    DEMO.listings.map(function(l){
+      return "<tr><td class='font-mono'>"+l.sku+"</td><td>"+l.name+"</td><td>"+DEMO.pkr(l.wholesale)+"</td><td>"+DEMO.pkr(l.map)+"</td><td>"+l.stock+"</td><td>"+l.used+" / "+l.cap+"</td><td>"+videoCell(l)+"</td><td>"+statusBadge(l.status)+"</td><td class='whitespace-nowrap'><button class='btn-ghost btn-sm' type='button' data-edit='"+l.sku+"'>Edit</button> <button class='btn-ghost btn-sm' type='button' onclick=\"toast('Stock sync queued (demo).')\">Sync stock</button></td></tr>";
+    }).join("")+"</tbody>";
+
+  document.getElementById("add-listing-btn").addEventListener("click", function(){ openListing(null); });
+  document.getElementById("tbl").addEventListener("click", function(e){
+    var btn = e.target.closest("[data-edit]");
+    if (!btn) return;
+    openListing(btn.getAttribute("data-edit"));
+  });
+  document.getElementById("video-file").addEventListener("change", function(){
+    var f = this.files && this.files[0];
+    document.getElementById("video-file-name").textContent = f
+      ? (f.name + " · " + Math.round(f.size/1024) + " KB (demo — not uploaded)")
+      : "No file chosen (demo)";
+  });
+  if (location.hash === "#add") openListing(null);
+  if (location.hash.indexOf("#edit") === 0) {
+    var sku = new URLSearchParams(location.hash.slice(1)).get("edit") || (location.hash.split("=")[1]) || "TIF-3SS";
+    openListing(sku);
+  }
+</script>
+
+</body></html>

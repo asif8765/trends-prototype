@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Product</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="reseller" data-page="catalog" class="bg-paper text-ink">
+  <div id="app-shell" class="app-shell">
+    <div class="flex-1 min-w-0 flex flex-col">
+      <main id="app-main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl w-full mx-auto">
+        
+<div id="prod-root">Loading demo product…</div>
+<div id="import-modal" class="modal-backdrop hidden">
+  <div class="modal">
+    <div class="flex justify-between items-start">
+      <h2 class="font-display text-2xl">Import to store</h2>
+      <button data-close-modal class="text-muted">✕</button>
+    </div>
+    <form id="import-form" class="mt-4 space-y-3">
+      <div>
+        <label class="field">Store</label>
+        <select name="store">
+          <option>Ayesha Mart — Shopify</option>
+          <option>Ayesha Woo — WooCommerce</option>
+          <option disabled>Daraz shop — Agency plan required</option>
+        </select>
+      </div>
+      <div>
+        <label class="field">Sell price (PKR, must be ≥ MAP)</label>
+        <input name="price" id="import-price" type="number" />
+      </div>
+      <p class="text-sm text-muted" id="import-math"></p>
+      <label class="rights-box" id="import-video-row">
+        <input type="checkbox" name="includeVideo" id="import-video" checked />
+        <span>Import to my store <strong>with video</strong>. Shopify and WooCommerce can take the product video. Daraz has limited video support — import there is mostly images.</span>
+      </label>
+      <div class="flex gap-2">
+        <button class="btn-primary flex-1" type="submit" id="import-submit">Import to my store (with video)</button>
+        <button class="btn-ghost" type="button" data-close-modal>Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+      </main>
+      <div id="site-footer"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+<script>
+  var id = new URLSearchParams(location.search).get("id") || "p1";
+  var p = DEMO.productById(id);
+  var s = DEMO.supplierOf(p.supplier);
+  var v = p.video || null;
+  document.title = p.name + " · " + BRAND.name;
+  function math(price){
+    var e = DEMO.door(p, price);
+    return "Door price "+DEMO.pkr(e.door)+" · your profit "+DEMO.pkr(e.profit)+" after Rs 25 example fee (delivered only).";
+  }
+  function permBadge(ok, yes, no){
+    return '<span class="perm-badge '+(ok ? "ok" : "no")+'">'+(ok ? "✓ "+yes : "✕ "+no)+"</span>";
+  }
+  var gallery;
+  if (v) {
+    gallery =
+      '<div class="video-stage" id="video-stage" style="background:'+p.hue+'">'+
+        '<span class="video-emoji">'+p.emoji+'</span>'+
+        '<button type="button" class="play-btn" id="play-demo" aria-label="Play product video (demo poster)"></button>'+
+        '<span class="video-duration">'+v.duration+'</span>'+
+        '<span class="video-demo-tag">Demo poster — no video file</span>'+
+      '</div>'+
+      '<div class="video-thumbs">'+
+        '<button type="button" class="video-thumb active" id="thumb-video" style="background:'+p.hue+'" title="Product video">'+p.emoji+'<span class="mini-play"></span></button>'+
+        '<button type="button" class="video-thumb" id="thumb-photo" style="background:'+p.hue+'" title="Still photo">'+p.emoji+'</button>'+
+      '</div>'+
+      '<div class="perm-row">'+
+        permBadge(v.storeOk, "Store OK", "Not allowed in store")+
+        permBadge(v.adsOk, "Ads OK", "Ads not allowed")+
+        (v.watermarkRequired ? '<span class="perm-badge warn">Watermark required</span>' : "")+
+        '<span class="text-xs text-muted self-center">'+v.sourceLabel+'</span>'+
+      '</div>';
+    var locked = !v.adsOk;
+    var lockAttr = locked ? ' data-locked="true"' : "";
+    var kitNote = locked
+      ? "The supplier has not allowed paid-ads use of this video. Store import can still include it if Store OK is on."
+      : (v.watermarkRequired
+        ? "Ads kit is available with a required watermark — this is not the clean file. Formats for Facebook and TikTok ads."
+        : "Clean video (no supplier watermark or contact details) plus ready captions. Demo buttons only — no media file is hosted here.");
+    gallery +=
+      '<div class="card p-5 ads-kit'+(locked ? " is-locked" : "")+'" id="ads-kit">'+
+        '<h2 class="font-semibold">Ads kit</h2>'+
+        '<p class="text-sm text-muted mt-1">'+kitNote+'</p>'+
+        '<div class="ads-kit-grid mt-4">'+
+          '<div class="ads-frame ratio-9-16"><div class="frame-box">9:16</div><div class="text-xs font-semibold mb-2">Stories / TikTok / Reels</div><button type="button" class="btn-ghost btn-sm w-full" data-action="download-ads" data-format="9:16 vertical MP4"'+lockAttr+'>Download 9:16</button></div>'+
+          '<div class="ads-frame ratio-1-1"><div class="frame-box">1:1</div><div class="text-xs font-semibold mb-2">Feed square</div><button type="button" class="btn-ghost btn-sm w-full" data-action="download-ads" data-format="1:1 square MP4"'+lockAttr+'>Download 1:1</button></div>'+
+          '<div class="ads-frame ratio-16-9"><div class="frame-box">16:9</div><div class="text-xs font-semibold mb-2">Landscape / YouTube</div><button type="button" class="btn-ghost btn-sm w-full" data-action="download-ads" data-format="16:9 landscape MP4"'+lockAttr+'>Download 16:9</button></div>'+
+        '</div>'+
+        '<div class="flex flex-wrap gap-2 mt-4">'+
+          '<button type="button" class="btn-ghost btn-sm" data-action="download-captions" data-lang="English"'+lockAttr+'>English captions</button>'+
+          '<button type="button" class="btn-ghost btn-sm" data-action="download-captions" data-lang="Urdu"'+lockAttr+'>Urdu captions</button>'+
+        '</div>'+
+        (v.captionsEn ? '<p class="text-xs text-muted mt-3"><strong>EN (demo):</strong> '+v.captionsEn+'</p>' : "")+
+        (v.captionsUr ? '<p class="text-xs text-muted mt-1"><strong>UR (demo):</strong> <span dir="rtl" style="display:inline-block">'+v.captionsUr+'</span></p>' : "")+
+      '</div>';
+  } else {
+    gallery =
+      '<div class="product-art" style="background:'+p.hue+';aspect-ratio:4/3;font-size:5rem">'+p.emoji+'</div>'+
+      '<p class="text-sm text-muted mt-3">This listing has no product video yet.</p>';
+  }
+
+  var importLabel = (v && v.storeOk) ? "Import to my store (with video)" : "Import to store";
+  var importAction = (v && v.storeOk) ? "import-with-video" : "import";
+
+  document.getElementById("prod-root").innerHTML =
+    '<a class="text-sm text-muted" href="catalog.html">← Catalog</a>'+
+    '<div class="grid lg:grid-cols-2 gap-8 mt-4">'+
+    '<div>'+
+      gallery+
+      '<div class="card p-5 mt-4"><h2 class="font-semibold">Description</h2>'+
+      '<p class="text-sm text-muted mt-2">Demo listing for a Pakistani catalog item. Weight '+p.weight+'. Category '+p.cat+'. Returns attributable to supplier (demo): '+p.returns+'%. End-customer RTO is separate and billed to the reseller wallet.</p></div>'+
+    '</div>'+
+    '<div>'+
+      '<div class="flex items-center gap-2 mb-2">'+statusBadge(s.health)+'<span class="text-sm text-muted">Supplier Account Health</span></div>'+
+      '<h1 class="font-display text-3xl">'+p.name+'</h1>'+
+      '<p class="text-muted mt-1">'+s.name+' · '+s.city+' · ★ '+p.rating+' · on-time '+s.onTime+'%</p>'+
+      '<p class="text-sm mt-1">'+p.dispatch+'</p>'+
+      '<dl class="grid grid-cols-2 gap-3 mt-6">'+
+      [["Wholesale", DEMO.pkr(p.wholesale)],["MAP / min resale", DEMO.pkr(p.map)],["Suggested sell", DEMO.pkr(p.suggested)],["Courier estimate", DEMO.pkr(p.courier)],["Door price", DEMO.pkr(DEMO.door(p).door)],["Your profit", DEMO.pkr(DEMO.door(p).profit)]].map(function(r){
+        return '<div class="card p-3"><dt class="text-xs text-muted">'+r[0]+'</dt><dd class="font-semibold text-lg">'+r[1]+'</dd></div>';
+      }).join("")+'</dl>'+
+      '<p class="text-xs text-muted mt-3">Door price = sell + courier. Profit = sell − wholesale − Rs 25 example fee. Stock '+p.stock+' units.</p>'+
+      '<div class="flex flex-wrap gap-2 mt-6">'+
+      '<button class="btn-primary" data-action="'+importAction+'" id="import-btn">'+importLabel+'</button>'+
+      '<button class="btn-ghost" onclick="toast(\'Saved to My Products (demo).\')">Save to My Products</button></div>'+
+    '</div></div>';
+
+  var play = document.getElementById("play-demo");
+  var stage = document.getElementById("video-stage");
+  if (play && stage) {
+    play.innerHTML = '<span class="play-triangle"></span>';
+    play.addEventListener("click", function(){
+      stage.classList.toggle("is-demo-playing");
+      toast("Demo poster only — this prototype does not host or hotlink a video file.");
+    });
+  }
+
+  var priceInput = document.getElementById("import-price");
+  priceInput.value = p.suggested;
+  var videoRow = document.getElementById("import-video-row");
+  var videoCb = document.getElementById("import-video");
+  var submitBtn = document.getElementById("import-submit");
+  if (!v || !v.storeOk) {
+    if (videoRow) videoRow.classList.add("hidden");
+    if (videoCb) videoCb.checked = false;
+    if (submitBtn) submitBtn.textContent = "Import listing";
+  }
+  function syncImportLabel(){
+    if (!submitBtn || !videoCb) return;
+    submitBtn.textContent = videoCb.checked ? "Import to my store (with video)" : "Import listing";
+  }
+  if (videoCb) videoCb.addEventListener("change", syncImportLabel);
+  function upd(){ document.getElementById("import-math").textContent = math(priceInput.value); if(Number(priceInput.value)<p.map){ document.getElementById("import-math").textContent += " Sell price is below MAP — this would be blocked."; } }
+  priceInput.addEventListener("input", upd); upd();
+  if(location.hash==="#import") openModal("import-modal");
+</script>
+
+</body></html>

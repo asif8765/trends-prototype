@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — How it works</title>
+  <meta name="description" content="Trends is a Pakistan COD dropshipping platform prototype for verified suppliers and store-based resellers." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="./brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="./css/app.css" />
+  
+</head>
+<body data-layout="public" data-page="how" class="bg-paper text-ink">
+  <div id="site-nav"></div>
+  <main class="max-w-3xl mx-auto px-4 py-16">
+    <p class="kicker">Money flow</p>
+    <h1 class="font-display text-4xl mt-2">How <span data-brand></span> moves an order in Pakistan.</h1>
+    <p class="mt-4 text-muted text-lg">The platform sits in the middle: the reseller owns the customer relationship, the supplier owns the stock, and <span data-brand></span> books the courier, collects COD, and splits the ledger.</p>
+
+    <h2 class="font-display text-2xl mt-12">For resellers</h2>
+    <ol class="mt-4 space-y-4">
+      <li class="card p-5"><strong>1. Subscribe and connect a store.</strong> Basic, Pro, or Agency. Connect Shopify or WooCommerce (Daraz on Agency). OTP login on phone + WhatsApp.</li>
+      <li class="card p-5"><strong>2. Import listings.</strong> Browse the catalog, see wholesale, MAP, courier estimate, door price, and profit. Download the ad pack. Edit your sell price (at or above MAP) and push to the store.</li>
+      <li class="card p-5"><strong>3. A customer pays COD.</strong> The order lands here. We confirm the buyer on WhatsApp or IVR before anyone packs.</li>
+      <li class="card p-5"><strong>4. You earn on delivery.</strong> After the courier remits COD, your margin (sell − wholesale − courier − platform fee) becomes available. Refused parcels (RTO) debit courier cost from your wallet — this is disclosed, not a surprise.</li>
+    </ol>
+
+    <h2 class="font-display text-2xl mt-12">For suppliers</h2>
+    <ol class="mt-4 space-y-4">
+      <li class="card p-5"><strong>1. Apply and pass KYC.</strong> CNIC, NTN, bank or Raast, and warehouse photos. Auto-approval unless flagged.</li>
+      <li class="card p-5"><strong>2. List at wholesale + MAP.</strong> Set a daily order cap. Stock syncs to every reseller who imported the SKU.</li>
+      <li class="card p-5"><strong>3. Pack on SLA.</strong> 24h or 48h handover. We print the courier label. Late dispatch hits Account Health and can place a payout reserve.</li>
+      <li class="card p-5"><strong>4. Get paid after delivery.</strong> Wholesale is released when the parcel is delivered and COD is reconciled. You do not collect cash from the buyer.</li>
+    </ol>
+
+    <h2 class="font-display text-2xl mt-12">Door-price formula</h2>
+    <div class="card p-6 mt-4 font-mono text-sm leading-7">
+      Door price = your sell price + estimated courier<br/>
+      Customer COD = door price<br/>
+      Reseller profit (if delivered) = sell price − wholesale − platform fee<br/>
+      Note: courier is paid from COD collected; RTO courier cost is deducted from the reseller wallet.<br/>
+      Example fee in this prototype: Rs 25 per delivered order (assumption / example until launch).
+    </div>
+
+    <div class="mt-10 flex gap-3">
+      <a class="btn-primary" href="for-resellers.html">Reseller duties</a>
+      <a class="btn-ghost" href="for-suppliers.html">Supplier duties</a>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+
+  <script src="./js/data.js"></script>
+  <script src="./js/ui.js"></script>
+  <script src="./js/layout.js"></script>
+  
+
+<script>document.title = (BRAND.name) + " — How it works";</script>
+</body></html>

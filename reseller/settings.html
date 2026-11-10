@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="reseller" data-page="settings" class="bg-paper text-ink">
+  <div id="app-shell" class="app-shell">
+    <div class="flex-1 min-w-0 flex flex-col">
+      <main id="app-main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl w-full mx-auto">
+        
+<p class="kicker">Reseller settings</p>
+<h1 class="font-display text-3xl mt-1">Stores and security</h1>
+<div class="card p-5 mt-6">
+  <h2 class="font-semibold">Connected stores</h2>
+  <div class="table-wrap mt-3"><table class="data" id="stores"></table></div>
+</div>
+<div class="card p-5 mt-6">
+  <h2 class="font-semibold">Sign-in security</h2>
+  <p class="text-sm text-muted mt-1">OTP via WhatsApp and SMS (email fallback). OTP is also required on payout-detail changes and new-device login. Optional 2FA app.</p>
+  <div class="flex flex-wrap gap-2 mt-3">
+    <span class="badge badge-healthy">WhatsApp OTP on</span>
+    <span class="badge badge-healthy">SMS fallback on</span>
+    <span class="badge badge-neutral">Authenticator app — off</span>
+  </div>
+  <button class="btn-ghost btn-sm mt-3" onclick="toast('Authenticator setup would start here (demo).')">Enable 2FA app</button>
+  <h3 class="font-semibold mt-6">Devices</h3>
+  <div class="table-wrap mt-2"><table class="data" id="devices"></table></div>
+</div>
+<div class="card p-5 mt-6">
+  <h2 class="font-semibold">Notifications</h2>
+  <label class="flex items-center gap-2 mt-3 text-sm"><input type="checkbox" checked class="w-4" /> WhatsApp for confirmation failures</label>
+  <label class="flex items-center gap-2 mt-2 text-sm"><input type="checkbox" checked class="w-4" /> Email for payout holds</label>
+  <button class="btn-primary btn-sm mt-4" type="button" onclick="toast('Notification preferences saved (demo).')">Save</button>
+</div>
+
+      </main>
+      <div id="site-footer"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+<script>
+  document.title = BRAND.name + " — Settings";
+  document.getElementById("stores").innerHTML = "<thead><tr><th>Store</th><th>Platform</th><th>URL</th><th>Status</th><th></th></tr></thead><tbody>"+
+    DEMO.reseller.stores.map(function(s){
+      var btn = s.status==="Connected"
+        ? '<button class="btn-ghost btn-sm" onclick="toast(\'Store disconnected (demo).\')">Disconnect</button>'
+        : '<button class="btn-primary btn-sm" data-action="connect-store">Connect</button>';
+      return "<tr><td>"+s.name+"</td><td>"+s.platform+"</td><td>"+s.url+"</td><td>"+statusBadge(s.status)+"</td><td>"+btn+"</td></tr>";
+    }).join("")+"</tbody>";
+  document.getElementById("devices").innerHTML = "<thead><tr><th>Device</th><th>Last seen</th><th></th></tr></thead><tbody>"+
+    DEMO.reseller.devices.map(function(d){
+      return "<tr><td>"+d.name+(d.current?' <span class=\'badge badge-healthy\'>This device</span>':'')+"</td><td>"+d.last+"</td><td>"+(d.current?"":'<button class="btn-ghost btn-sm" data-action="revoke-device">Revoke</button>')+"</td></tr>";
+    }).join("")+"</tbody>";
+</script>
+
+</body></html>

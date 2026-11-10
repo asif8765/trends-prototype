@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Supplier payouts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="supplier" data-page="payouts" class="bg-paper text-ink">
+  <div id="app-shell" class="app-shell">
+    <div class="flex-1 min-w-0 flex flex-col">
+      <main id="app-main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl w-full mx-auto">
+        
+<p class="kicker">Supplier wallet</p>
+<div class="flex items-start justify-between gap-3 flex-wrap">
+  <h1 class="font-display text-3xl mt-1">Payouts</h1>
+  <button class="btn-primary" onclick="openModal('withdraw-modal')">Request withdrawal</button>
+</div>
+<p class="text-sm text-muted mt-1">Wholesale is released after delivery and COD reconciliation. Demo figures.</p>
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6" id="wallets"></div>
+<div class="card p-5 mt-6">
+  <h2 class="font-semibold">Per-order ledger</h2>
+  <div class="table-wrap mt-3"><table class="data" id="ledger"></table></div>
+</div>
+<div class="card p-5 mt-6">
+  <div class="flex justify-between"><h2 class="font-semibold">Payout history</h2>
+    <button class="btn-ghost btn-sm" onclick="toast('Statement download (demo).')">Download statement</button>
+  </div>
+  <div class="table-wrap mt-3"><table class="data" id="hist"></table></div>
+  <p class="text-xs text-muted mt-3">WHT, if applicable, is to-verify and will be itemized on live invoices.</p>
+</div>
+<div id="withdraw-modal" class="modal-backdrop hidden">
+  <div class="modal">
+    <h2 class="font-display text-2xl">Withdraw available balance</h2>
+    <form id="withdraw-form" class="mt-4 space-y-3">
+      <div><label class="field">Amount (PKR)</label><input type="number" value="214800" /></div>
+      <div><label class="field">Destination</label>
+        <select><option>Bank / Raast · MCB ****9021</option><option>JazzCash</option><option>Easypaisa</option></select>
+      </div>
+      <button class="btn-primary w-full" type="submit">Submit request</button>
+    </form>
+  </div>
+</div>
+
+      </main>
+      <div id="site-footer"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+<script>
+  document.title = BRAND.name + " — Supplier payouts";
+  var w = DEMO.supplier.wallet;
+  document.getElementById("wallets").innerHTML = [
+    ["Pending COD", w.pending, "In transit or awaiting remittance"],
+    ["Available", w.available, "Next run "+DEMO.supplier.payoutDate],
+    ["Held / reserve", w.held, w.heldReason],
+    ["Negative", w.negative, "Should stay at zero"],
+  ].map(function(x){return '<div class="card p-4"><div class="text-xs text-muted uppercase">'+x[0]+'</div><div class="font-display text-2xl mt-1">'+DEMO.pkr(x[1])+'</div><div class="text-xs text-muted mt-1">'+x[2]+'</div></div>';}).join("");
+  document.getElementById("ledger").innerHTML = "<thead><tr><th>Order</th><th>Date</th><th>Wholesale</th><th>Penalty</th><th>Net</th><th>State</th></tr></thead><tbody>"+
+    DEMO.ledgerSupplier.map(function(r){return "<tr><td>"+r.id+"</td><td>"+r.date+"</td><td>"+DEMO.pkr(r.wholesale)+"</td><td>"+DEMO.pkr(r.penalty)+"</td><td class='font-semibold'>"+DEMO.pkr(r.net)+"</td><td>"+statusBadge(r.state)+"</td></tr>";}).join("")+"</tbody>";
+  document.getElementById("hist").innerHTML = "<thead><tr><th>ID</th><th>Date</th><th>Method</th><th>Amount</th><th>Status</th></tr></thead><tbody>"+
+    DEMO.payouts.map(function(p){return "<tr><td>"+p.id+"</td><td>"+p.date+"</td><td>"+p.method+"</td><td>"+DEMO.pkr(p.amount)+"</td><td>"+statusBadge(p.status)+"</td></tr>";}).join("")+"</tbody>";
+</script>
+
+</body></html>

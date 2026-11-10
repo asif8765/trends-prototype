@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Verify OTP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="auth" data-page="otp" class="bg-paper text-ink">
+  <div id="site-nav"></div>
+  <main class="max-w-md mx-auto px-4 py-12">
+    <h1 class="font-display text-3xl">Enter your code</h1>
+    <p class="text-muted mt-2">We would send a WhatsApp authentication template to <strong id="phone-label">your number</strong>. In this prototype, enter any 6 digits.</p>
+    <form id="otp-form" class="card p-6 mt-8 space-y-4">
+      <div>
+        <label class="field" for="otp">6-digit OTP</label>
+        <input id="otp" name="otp" inputmode="numeric" maxlength="6" pattern="\d{6}" placeholder="123456" autocomplete="one-time-code" class="text-center text-2xl tracking-[0.4em] font-semibold" />
+      </div>
+      <div class="flex gap-2 text-sm">
+        <span class="badge badge-neutral">WhatsApp</span>
+        <span class="badge badge-neutral">SMS fallback</span>
+        <span class="badge badge-neutral">Email fallback</span>
+      </div>
+      <button class="btn-primary w-full" type="submit">Verify</button>
+      <button class="btn-ghost w-full" type="button" onclick="toast('A new demo code would be sent. Still enter any 6 digits.')">Resend code</button>
+    </form>
+  </main>
+  <div id="site-footer"></div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+
+<script>
+  document.title = BRAND.name + " — Verify OTP";
+  var p = sessionStorage.getItem("trends-phone");
+  if (p) document.getElementById("phone-label").textContent = p;
+</script>
+</body></html>

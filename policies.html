@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Policies and help</title>
+  <meta name="description" content="Trends is a Pakistan COD dropshipping platform prototype for verified suppliers and store-based resellers." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="./brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="./css/app.css" />
+  
+</head>
+<body data-layout="public" data-page="policies" class="bg-paper text-ink">
+  <div id="site-nav"></div>
+  <main class="max-w-3xl mx-auto px-4 py-16">
+    <p class="kicker">Stub</p>
+    <h1 class="font-display text-4xl mt-2">Policies and help</h1>
+    <p class="mt-4 text-muted">These pages will be finalized before launch. The summaries below match the business blueprint and are not legal advice.</p>
+    <div class="space-y-4 mt-8">
+      <section class="card p-6" id="tos"><h2 class="font-semibold">Terms of service</h2><p class="text-sm text-muted mt-2">Resellers subscribe to import listings. Suppliers must ship genuine, accurately described goods on the stated SLA. <span data-brand></span> is the COD collection and courier booking principal for platform orders, not the seller of record to the end customer.</p></section>
+      <section class="card p-6" id="payouts"><h2 class="font-semibold">Payouts, RTO, and refunds</h2><p class="text-sm text-muted mt-2">Fees on delivered orders only. RTO courier cost is debited from the reseller wallet. Payouts run weekly to bank, Raast, JazzCash, or Easypaisa, subject to Account Health holds. Withholding tax, if applicable, will be shown on statements (to verify with counsel).</p></section>
+      <section class="card p-6" id="health"><h2 class="font-semibold">Account Health policy</h2><p class="text-sm text-muted mt-2">Ladder: Healthy → Warning → At risk → Restricted → Suspended → Terminated. Thresholds are proposed in the product and labeled as such. Restrictions (order caps, listing limits, payout reserves) apply automatically. Termination and Plan of Action appeals are reviewed by a human. On termination, a proposed 90-day funds reserve applies. Content and video-use violations (using a supplier video without permission, or ripping another supplier's media) count on this same ladder.</p>
+        <a class="btn-ghost btn-sm mt-3" href="reseller/account-health.html">See the reseller dashboard</a>
+      </section>
+      <section class="card p-6" id="content"><h2 class="font-semibold">Content and video-use policy</h2><p class="text-sm text-muted mt-2">Suppliers may only upload videos they own, or have licensed, and must declare those rights. They set permissions per video: allowed in the reseller store, allowed in paid ads, and whether a watermark is required. Resellers may import and use a video only under those permissions. Using a video without permission, stripping a required watermark, or ripping another supplier's content is an IP / content-policy violation. A report and takedown flow hides the asset while it is reviewed; repeats lead to restriction. Trends does not pull videos from wholesalers who have not joined the platform.</p></section>
+      <section class="card p-6" id="privacy"><h2 class="font-semibold">Privacy</h2><p class="text-sm text-muted mt-2">We store CNIC / NTN documents for KYC, phone numbers for OTP and confirmation, and order data for fulfillment. This prototype does not collect real personal data — do not upload genuine CNIC images here.</p></section>
+      <section class="card p-6" id="help"><h2 class="font-semibold">Help</h2><p class="text-sm text-muted mt-2">Live product will have an AI chatbot with human escalation. In this demo, use the in-app toasts as stand-ins, or open the <a class="underline" href="admin/exceptions.html">admin exception queue</a>.</p></section>
+    </div>
+  </main>
+  <div id="site-footer"></div>
+
+  <script src="./js/data.js"></script>
+  <script src="./js/ui.js"></script>
+  <script src="./js/layout.js"></script>
+  
+
+<script>document.title = BRAND.name + " — Policies and help";</script>
+</body></html>

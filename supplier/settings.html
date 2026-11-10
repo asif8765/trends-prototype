@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Supplier settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="supplier" data-page="settings" class="bg-paper text-ink">
+  <div id="app-shell" class="app-shell">
+    <div class="flex-1 min-w-0 flex flex-col">
+      <main id="app-main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl w-full mx-auto">
+        
+<p class="kicker">Supplier settings</p>
+<h1 class="font-display text-3xl mt-1">Business and security</h1>
+<div class="card p-5 mt-6 space-y-3">
+  <h2 class="font-semibold">Business profile</h2>
+  <div class="grid sm:grid-cols-2 gap-3">
+    <div><label class="field">Legal name</label><input value="Lahore Home Goods" /></div>
+    <div><label class="field">Warehouse city</label><input value="Lahore" /></div>
+    <div><label class="field">NTN</label><input value="XXXXXXX-X" /></div>
+    <div><label class="field">Default dispatch SLA</label><select><option>24 hours</option><option>48 hours</option></select></div>
+  </div>
+  <button class="btn-primary btn-sm" onclick="toast('Profile saved (demo).')">Save</button>
+</div>
+<div class="card p-5 mt-6">
+  <h2 class="font-semibold">Payout destination</h2>
+  <p class="text-sm text-muted mt-1">Changing bank, Raast, JazzCash, or Easypaisa details requires a fresh OTP.</p>
+  <div class="grid sm:grid-cols-2 gap-3 mt-3">
+    <div><label class="field">IBAN</label><input value="PK00 MCBX 0000 0000 9021" /></div>
+    <div><label class="field">Account title</label><input value="Lahore Home Goods" /></div>
+  </div>
+  <button class="btn-ghost btn-sm mt-3" onclick="toast('OTP would be sent before this change is saved.')">Update destination</button>
+</div>
+<div class="card p-5 mt-6">
+  <h2 class="font-semibold">Sign-in security</h2>
+  <p class="text-sm text-muted mt-1">OTP on login, new devices, and payout changes. Same model as resellers.</p>
+  <span class="badge badge-healthy mt-2">WhatsApp OTP on</span>
+</div>
+
+      </main>
+      <div id="site-footer"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+<script>document.title = BRAND.name + " — Supplier settings";</script>
+
+</body></html>

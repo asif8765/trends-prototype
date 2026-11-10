@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Exception queue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="admin" data-page="exceptions" class="bg-paper text-ink">
+  <div id="app-shell" class="app-shell">
+    <div class="flex-1 min-w-0 flex flex-col">
+      <main id="app-main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl w-full mx-auto">
+        
+<p class="kicker">Admin · human touchpoints only</p>
+<h1 class="font-display text-3xl mt-1">Exception queue</h1>
+<p class="text-sm text-muted mt-1">Flagged KYC, disputes, Plan of Action appeals, and settlement mismatches. Everything else is automated. Demo tickets.</p>
+<div class="flex gap-2 flex-wrap mt-4" id="tabs"></div>
+<div class="card mt-4"><div class="table-wrap"><table class="data" id="tbl"></table></div></div>
+<p class="text-xs text-muted mt-4">Open a <a class="underline" href="../reseller/account-health.html">reseller</a> or <a class="underline" href="../supplier/account-health.html">supplier</a> health page, or return to the <a class="underline" href="../index.html">public site</a>.</p>
+
+      </main>
+      <div id="site-footer"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+<script>
+  document.title = BRAND.name + " — Exception queue";
+  var filter = "All";
+  function paint(){
+    var types=["All"].concat(Array.from(new Set(DEMO.exceptions.map(function(e){return e.type;}))));
+    document.getElementById("tabs").innerHTML = types.map(function(t){
+      return '<button class="btn-sm '+(t===filter?"btn-primary":"btn-ghost")+'" data-f="'+t+'">'+t+'</button>';
+    }).join("");
+    var rows=DEMO.exceptions.filter(function(e){return filter==="All"||e.type===filter;});
+    document.getElementById("tbl").innerHTML = "<thead><tr><th>ID</th><th>Type</th><th>Party</th><th>Reason</th><th>Age</th><th>Priority</th><th></th></tr></thead><tbody>"+
+      rows.map(function(e){
+        return "<tr><td>"+e.id+"</td><td>"+e.type+"</td><td>"+e.party+"</td><td>"+e.reason+"</td><td>"+e.age+"</td><td>"+statusBadge(e.priority)+"</td><td class='whitespace-nowrap'><button class='btn-primary btn-sm' data-action='approve-ex'>Resolve</button> <button class='btn-ghost btn-sm' data-action='escalate-ex'>Escalate</button></td></tr>";
+      }).join("")+"</tbody>";
+  }
+  document.getElementById("tabs").addEventListener("click", function(e){
+    var b=e.target.closest("[data-f]"); if(!b) return; filter=b.getAttribute("data-f"); paint();
+  });
+  paint();
+</script>
+
+</body></html>

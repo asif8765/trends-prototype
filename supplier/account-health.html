@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Account Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="supplier" data-page="health" class="bg-paper text-ink">
+  <div id="app-shell" class="app-shell">
+    <div class="flex-1 min-w-0 flex flex-col">
+      <main id="app-main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl w-full mx-auto">
+        
+<div class="flex items-start justify-between gap-4 flex-wrap">
+  <div>
+    <p class="kicker">Account Health</p>
+    <h1 class="font-display text-3xl mt-1" id="who"></h1>
+    <p class="text-sm text-muted mt-1" id="window"></p>
+  </div>
+  <div class="flex flex-col items-end gap-1" id="badge"></div>
+</div>
+<div class="grid md:grid-cols-2 gap-3 mt-6" id="actions"></div>
+<h2 class="font-semibold mt-8">Metrics vs proposed targets</h2>
+<p class="text-xs text-muted">Click a card for the definition. Thresholds are proposed, adapted to Pakistan COD — not copied as Amazon legal limits.</p>
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3" id="metrics"></div>
+<div class="card p-5 mt-8">
+  <h2 class="font-semibold">Policy violations</h2>
+  <div class="table-wrap mt-3"><table class="data" id="violations"></table></div>
+</div>
+<div class="grid lg:grid-cols-2 gap-4 mt-6">
+  <div class="card p-5">
+    <h2 class="font-semibold">Plan of Action / appeal</h2>
+    <p class="text-sm text-muted mt-1">Amazon-style three-part form. Human review for appeals and terminations only. Status: draft → submitted → accepted / rejected.</p>
+    <form id="poa-form" class="mt-4 space-y-3">
+      <div><label class="field">Root cause</label><textarea name="root" rows="3" required placeholder="What caused the metric or violation?"></textarea></div>
+      <div><label class="field">Immediate actions</label><textarea name="now" rows="3" required placeholder="What you are doing now"></textarea></div>
+      <div><label class="field">Preventative measures</label><textarea name="later" rows="3" required placeholder="How you will stop a repeat"></textarea></div>
+      <button class="btn-primary" type="submit">Submit Plan of Action</button>
+    </form>
+  </div>
+  <div class="card p-5">
+    <h2 class="font-semibold">Enforcement history</h2>
+    <div class="timeline mt-4" id="history"></div>
+  </div>
+</div>
+<div class="card p-5 mt-6">
+  <h2 class="font-semibold">Enforcement ladder</h2>
+  <p class="text-sm text-muted mt-1">Automatic thresholds. Restricted applies order caps, listing limits, and/or payout reserve. Termination still requires a human, then a proposed 90-day funds reserve.</p>
+  <ol class="mt-3 grid sm:grid-cols-3 lg:grid-cols-6 gap-2 text-sm">
+    <li class="badge badge-healthy justify-center py-2">Healthy</li>
+    <li class="badge badge-warning justify-center py-2">Warning</li>
+    <li class="badge badge-atrisk justify-center py-2">At risk</li>
+    <li class="badge badge-restricted justify-center py-2">Restricted</li>
+    <li class="badge badge-suspended justify-center py-2">Suspended</li>
+    <li class="badge badge-suspended justify-center py-2">Terminated</li>
+  </ol>
+  <p class="text-xs text-muted mt-3">Public policy stub: <a class="underline" href="../policies.html#health">Policies — Account Health</a> · <a class="underline" href="../policies.html#content">Content and video use</a>.</p>
+  <p class="text-sm mt-3">Content &amp; video use: resellers may only use a supplier video in their store or in paid ads when that permission was granted. Using a video without permission, stripping a required watermark, or ripping another supplier's content is an IP / content-policy violation and can lead to restriction. Report and takedown is available from the listing. Trends does not pull videos from wholesalers who have not joined.</p>
+</div>
+
+      </main>
+      <div id="site-footer"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+<script>
+  var ROLE = document.body.getAttribute("data-layout");
+  var pack = ROLE === "supplier" ? DEMO.healthSupplier : DEMO.healthReseller;
+  var who = ROLE === "supplier" ? DEMO.supplier.name + " · Supplier" : DEMO.reseller.name + " · Reseller";
+  document.title = BRAND.name + " — Account Health (" + ROLE + ")";
+  document.getElementById("who").textContent = who;
+  document.getElementById("window").textContent = DEMO.window + " (60 days for defect-style rates) · computed " + DEMO.computedAt + " · " + DEMO.notice;
+  document.getElementById("badge").innerHTML = '<span class="badge badge-' + pack.status + ' text-sm">' + pack.status + "</span>" +
+    '<span class="text-sm text-muted">Score ' + pack.score + " / 100 (prototype scale — not Amazon’s 0–1,000 formula)</span>";
+  document.getElementById("actions").innerHTML = pack.actions.map(function(a){
+    return '<div class="card p-4 border-l-4" style="border-left-color:var(--color-warning)"><div class="font-semibold">Action required · '+a.title+'</div><p class="text-sm text-muted mt-1">'+a.detail+'</p></div>';
+  }).join("");
+  document.getElementById("metrics").innerHTML = pack.metrics.map(function(m){
+    var cls = m.tone==="ok"?"metric-ok":m.tone==="warn"?"metric-warn":"metric-bad";
+    return '<button type="button" class="card p-4 text-left metric-card" data-def="'+m.def.replace(/"/g,'')+'" data-window="'+m.window+'">'+
+      '<div class="text-xs text-muted">'+m.name+'</div>'+
+      '<div class="flex items-baseline justify-between mt-1"><span class="font-display text-2xl '+cls+'">'+m.value+'</span><span class="text-xs text-muted">Target '+m.target+'</span></div>'+
+      '<div class="text-xs text-muted mt-2">'+m.window+' · '+m.accountable+' · '+m.trend+'</div></button>';
+  }).join("");
+  document.getElementById("metrics").addEventListener("click", function(e){
+    var b = e.target.closest(".metric-card");
+    if(!b) return;
+    toast(b.getAttribute("data-def") + " Window " + b.getAttribute("data-window") + ". Last 10 contributing orders would open here.");
+  });
+  document.getElementById("violations").innerHTML = "<thead><tr><th>Date</th><th>Policy</th><th>Detail</th><th>State change</th><th>Evidence</th></tr></thead><tbody>"+
+    pack.violations.map(function(v){
+      return "<tr><td>"+v.date+"</td><td>"+v.policy+"</td><td>"+v.detail+"</td><td>"+statusBadge(v.state)+"</td><td><button class='underline text-sm ev-btn' data-ev='"+v.evidence+"'>"+v.evidence+"</button></td></tr>";
+    }).join("")+"</tbody>";
+  document.getElementById("violations").addEventListener("click", function(e){
+    var b = e.target.closest(".ev-btn");
+    if(!b) return;
+    toast("Evidence viewer (demo): " + b.getAttribute("data-ev"));
+  });
+  document.getElementById("history").innerHTML = pack.history.map(function(h){
+    return '<div class="timeline-item '+h.tone+'"><div class="text-xs text-muted">'+h.date+'</div><div class="text-sm">'+h.text+'</div></div>';
+  }).join("");
+</script>
+
+</body></html>

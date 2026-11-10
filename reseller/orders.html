@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Orders</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="reseller" data-page="orders" class="bg-paper text-ink">
+  <div id="app-shell" class="app-shell">
+    <div class="flex-1 min-w-0 flex flex-col">
+      <main id="app-main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl w-full mx-auto">
+        
+<p class="kicker">Reseller</p>
+<h1 class="font-display text-3xl mt-1">Orders</h1>
+<p class="text-sm text-muted mt-1">Pipeline: confirmation → booked → in transit → delivered / RTO. Demo data.</p>
+<div class="flex gap-2 flex-wrap mt-4" id="tabs"></div>
+<div class="card mt-4"><div class="table-wrap"><table class="data" id="tbl"></table></div></div>
+
+      </main>
+      <div id="site-footer"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+<script>
+  document.title = BRAND.name + " — Orders";
+  var filter = "All";
+  function rows(){
+    return DEMO.ordersReseller.filter(function(o){ return filter==="All" || o.status===filter; });
+  }
+  function paint(){
+    var statuses = ["All"].concat(Array.from(new Set(DEMO.ordersReseller.map(function(o){return o.status;}))));
+    document.getElementById("tabs").innerHTML = statuses.map(function(s){
+      return '<button class="btn-sm '+(s===filter?"btn-primary":"btn-ghost")+'" data-f="'+s+'">'+s+'</button>';
+    }).join("");
+    document.getElementById("tbl").innerHTML = "<thead><tr><th>Order</th><th>Product</th><th>City</th><th>Confirmation</th><th>Status</th><th>Courier</th><th>Tracking</th><th>COD</th></tr></thead><tbody>"+
+      rows().map(function(o){
+        return "<tr><td class='font-semibold'>"+o.id+"</td><td>"+o.product+"</td><td>"+o.city+"</td><td>"+statusBadge(o.confirm)+"</td><td>"+statusBadge(o.status)+"</td><td>"+o.courier+"</td><td>"+(o.track!=="—"?'<button class="underline" data-action="copy-track">'+o.track+"</button>":"—")+"</td><td>"+DEMO.pkr(o.cod)+"</td></tr>";
+      }).join("")+"</tbody>";
+  }
+  document.getElementById("tabs").addEventListener("click", function(e){
+    var b=e.target.closest("[data-f]"); if(!b) return; filter=b.getAttribute("data-f"); paint();
+  });
+  paint();
+</script>
+
+</body></html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Supplier overview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="supplier" data-page="dashboard" class="bg-paper text-ink">
+  <div id="app-shell" class="app-shell">
+    <div class="flex-1 min-w-0 flex flex-col">
+      <main id="app-main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl w-full mx-auto">
+        
+<div class="flex items-start justify-between gap-4 flex-wrap">
+  <div>
+    <p class="kicker">Supplier · Lahore Home Goods</p>
+    <h1 class="font-display text-3xl mt-1">Overview</h1>
+    <p class="text-sm text-muted mt-1">Demo data · computed <span id="when"></span></p>
+  </div>
+  <div class="flex items-center gap-2">
+    <span id="badge"></span>
+    <a class="btn-ghost btn-sm" href="account-health.html">Account Health</a>
+  </div>
+</div>
+<div id="banner" class="card p-4 mt-4 border-l-4" style="border-left-color:var(--color-warning)"></div>
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6" id="kpis"></div>
+<div class="card p-5 mt-6">
+  <div class="flex justify-between"><h2 class="font-semibold">Pack queue</h2><a class="text-sm text-primary" href="orders.html">All dispatch orders</a></div>
+  <div class="table-wrap mt-3"><table class="data" id="queue"></table></div>
+</div>
+
+      </main>
+      <div id="site-footer"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+<script>
+  document.title = BRAND.name + " — Supplier overview";
+  var s = DEMO.supplier;
+  document.getElementById("when").textContent = DEMO.computedAt;
+  document.getElementById("badge").innerHTML = '<span class="badge badge-'+s.health+'">'+s.health+'</span>';
+  document.getElementById("banner").innerHTML = "<strong>SLA alert.</strong> "+DEMO.healthSupplier.actions[1].title+' · <a class="underline" href="orders.html">Open queue</a>';
+  document.getElementById("kpis").innerHTML = [
+    ["To pack now", s.toPack, "Confirmed orders"],
+    ["On-time dispatch", s.onTime+"%", "Target ≥ 96%"],
+    ["Next payout", DEMO.pkr(s.nextPayout), s.payoutDate],
+    ["Open disputes", s.openDisputes, "Need evidence"],
+  ].map(function(k){
+    var warn = k[0].indexOf("On-time")>=0 && s.onTime<96;
+    return '<div class="card p-4"><div class="text-xs text-muted uppercase">'+k[0]+'</div><div class="font-display text-3xl mt-1 '+(warn?"metric-warn":"")+'">'+k[1]+'</div><div class="text-xs text-muted">'+k[2]+'</div></div>';
+  }).join("");
+  var q = DEMO.ordersSupplier.filter(function(o){return o.status!=="Handed to courier";});
+  document.getElementById("queue").innerHTML = "<thead><tr><th>Order</th><th>SKU</th><th>City</th><th>Reseller</th><th>SLA</th><th></th></tr></thead><tbody>"+
+    q.map(function(o){
+      return "<tr><td>"+o.id+"</td><td>"+o.sku+"</td><td>"+o.city+"</td><td>"+o.reseller+"</td><td class='"+slaClass(o.slaHours)+"'>"+slaLabel(o.slaHours)+"</td><td><button class='btn-ghost btn-sm' data-action='print-label'>Print label</button></td></tr>";
+    }).join("")+"</tbody>";
+</script>
+
+</body></html>

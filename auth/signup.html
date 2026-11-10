@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Sign up</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+<body data-layout="auth" data-page="signup" class="bg-paper text-ink">
+  <div id="site-nav"></div>
+  <main class="max-w-lg mx-auto px-4 py-12">
+    <h1 class="font-display text-3xl">Create your <span data-brand></span> account</h1>
+    <p class="text-muted mt-2">Choose a role, then confirm your phone with a WhatsApp or SMS OTP. This is a demo — any Pakistani-format number works.</p>
+    <form id="signup-form" class="card p-6 mt-8 space-y-5">
+      <div>
+        <span class="field">I am joining as</span>
+        <div class="grid grid-cols-2 gap-3 mt-2">
+          <label class="card p-4 cursor-pointer has-[:checked]:ring-2" style="--tw-ring-color:var(--color-primary)">
+            <input type="radio" name="role" value="reseller" checked class="mb-2" />
+            <div class="font-semibold">Reseller</div>
+            <div class="text-xs text-muted">I have or will have a store</div>
+          </label>
+          <label class="card p-4 cursor-pointer has-[:checked]:ring-2">
+            <input type="radio" name="role" value="supplier" class="mb-2" />
+            <div class="font-semibold">Supplier</div>
+            <div class="text-xs text-muted">I hold inventory in Pakistan</div>
+          </label>
+        </div>
+      </div>
+      <div>
+        <label class="field" for="name">Full name</label>
+        <input id="name" name="name" required placeholder="Ayesha Khan" />
+      </div>
+      <div>
+        <label class="field" for="phone">Mobile number</label>
+        <input id="phone" name="phone" required placeholder="03xx-xxxxxxx" inputmode="tel" />
+      </div>
+      <div>
+        <label class="field" for="email">Email fallback</label>
+        <input id="email" name="email" type="email" placeholder="you@store.pk" />
+      </div>
+      <button class="btn-primary w-full" type="submit">Send OTP</button>
+      <p class="text-xs text-muted">OTP will be offered on WhatsApp first, then SMS, then email. By continuing you agree to the <a class="underline" href="../policies.html">policy stubs</a>.</p>
+    </form>
+    <p class="text-sm text-center mt-6 text-muted">Already have a demo session? <a class="underline" href="../reseller/dashboard.html">Open reseller app</a> or <a class="underline" href="../supplier/dashboard.html">supplier app</a>.</p>
+  </main>
+  <div id="site-footer"></div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  
+
+<script>document.title = BRAND.name + " — Sign up";</script>
+</body></html>
