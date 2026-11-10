@@ -33,7 +33,7 @@ The included `Dockerfile` serves the site with nginx on Railway’s `$PORT`.
 ## New in this version
 
 - `supplier/ai-listing.html` — **Create listing with AI** (simulated). One product or many (folder / CSV / WhatsApp catalog). Deep links: `#demo`, `#review`, `#bulk`, `#bulk-review`.
-- `apply.html` — early-access application + waitlist (80 supplier / 120 store-owner founding spots). Configure `js/apply.config.js` → `FORM_ENDPOINT`. Setup guide: [`docs/google-sheet-setup.md`](./docs/google-sheet-setup.md). Preview the waitlist state with `apply.html?full=1`.
+- `apply.html` — early-access application + waitlist (80 supplier / 120 store-owner founding spots). Applicants first pick **Supplier (Wholesaler) — I have stock** or **Store owner (Reseller) — I sell online** (or both). A 2-question helper and a supplier stock check stop people picking the wrong side. Configure `js/apply.config.js` → `FORM_ENDPOINT`. Setup guide: [`docs/google-sheet-setup.md`](./docs/google-sheet-setup.md). Preview the waitlist state with `apply.html?full=1`.
 - Simpler supplier and reseller home screens: 4 big actions, get-started checklist, bottom tab bar on phones, small Urdu hints.
 - Shared product categories in [`js/categories.js`](./js/categories.js), used on the apply form, home grid, catalog filters, AI listing builder and supplier listings. Applying is free until the platform goes live for business in the coming weeks.
 

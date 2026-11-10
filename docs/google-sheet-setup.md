@@ -7,7 +7,11 @@ Until you finish these steps, `apply.html` runs in **demo mode** and only saves 
 ## What you get
 
 - One Google Sheet with two tabs: **Suppliers** and **Resellers**.
-- Every row has a timestamp, status (`founding` or `waitlist`), position number, the applicant's own referral code, who referred them, a referral count and all their answers. **Categories** is a comma-separated list of official category names. If the applicant picked Other, the typed value is in **Other category**.
+- Every row has a timestamp, status (`founding` or `waitlist`), position number, the applicant's own referral code, who referred them, a referral count, a **Role** (`supplier`, `reseller` or `both`) and all their answers.
+- If the applicant used the "Not sure?" helper, those two answers are saved in **Helper: has own stock** and **Helper: wants others to sell**.
+- Supplier rows also include **Holds stock**, **Stock / warehouse city** and **Units dispatchable per day**.
+- **Categories** is a comma-separated list of official category names. If the applicant picked Other, the typed value is in **Other category**.
+- If someone applies as **both**, the script writes one row to each tab (same referral code, prefix `B-`) and each tab has its own founding/waitlist position.
 - The live counter on the website shows the real number of spots left (80 suppliers, 120 store owners).
 - Once a track is full, new applicants are put on the waitlist automatically and see their waitlist position.
 
@@ -30,11 +34,9 @@ Until you finish these steps, `apply.html` runs in **demo mode** and only saves 
    Commit and push. GitHub Pages updates in about a minute.
 7. Test: open `apply.html`, submit a test application, and check that a row appears in the sheet. Then delete the test row.
 
-If you already deployed an earlier version of this script, add an **Other category** column (or redeploy a new version so the script can create a fresh tab). Existing **Categories** columns continue to receive a comma-separated list, for example `Home & Kitchen, Beauty & Skincare`.
+If you already deployed an earlier version of this script, paste the new code, save, then go to **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy**. The URL stays the same. The script adds any new columns (Role, helper answers, stock fields) to existing tabs without wiping rows.
 
-### Changing the script later
-
-After editing the script, go to **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy**. The URL stays the same. If you create a *New deployment* instead, the URL changes and you must update `js/apply.config.js`.
+If you create a *New deployment* instead, the URL changes and you must update `js/apply.config.js`.
 
 ### Changing the number of spots
 
@@ -46,35 +48,60 @@ Change `LIMITS` in the script **and** `spots` in `js/apply.config.js` so that bo
 /**
  * Early-access applications → Google Sheet
  * Tabs: Suppliers, Resellers. Founding limits: 80 / 120. Then waitlist.
+ * role=both writes one row to each tab with the same B- referral code.
  */
 const LIMITS = { supplier: 80, reseller: 120 };
 const TABS = { supplier: 'Suppliers', reseller: 'Resellers' };
 
-const BASE_COLS = ['Timestamp', 'Status', 'Position', 'Referral code', 'Referred by', 'Referrals', 'Review'];
+const BASE_COLS = [
+  'Timestamp', 'Status', 'Position', 'Referral code', 'Referred by', 'Referrals', 'Review',
+  'Role', 'Helper: has own stock', 'Helper: wants others to sell',
+];
 const FIELDS = {
-  supplier: ['businessName', 'contactName', 'whatsapp', 'city', 'categories', 'otherCategory', 'skus', 'monthlyOrders',
-             'couriers', 'sellsOn', 'hasVideos', 'dispatch48h'],
+  supplier: ['businessName', 'contactName', 'whatsapp', 'city', 'categories', 'otherCategory',
+             'hasStock', 'stockCity', 'dispatchPerDay',
+             'skus', 'monthlyOrders', 'couriers', 'sellsOn', 'hasVideos', 'dispatch48h'],
   reseller: ['contactName', 'whatsapp', 'city', 'storeType', 'monthlyOrders', 'categories', 'otherCategory',
              'deliveryRatio', 'wouldPay'],
 };
 const LABELS = {
   businessName: 'Business name', contactName: 'Contact name', whatsapp: 'WhatsApp', city: 'City',
-  categories: 'Categories', otherCategory: 'Other category', skus: 'SKUs', monthlyOrders: 'Monthly orders', couriers: 'Couriers',
+  categories: 'Categories', otherCategory: 'Other category',
+  hasStock: 'Holds stock', stockCity: 'Stock / warehouse city', dispatchPerDay: 'Units dispatchable per day',
+  skus: 'SKUs', monthlyOrders: 'Monthly orders', couriers: 'Couriers',
   sellsOn: 'Sells online on', hasVideos: 'Has product videos', dispatch48h: 'Dispatch in 24-48h',
   storeType: 'Store type', deliveryRatio: 'Delivery ratio', wouldPay: 'Would pay',
 };
+
+function headersFor_(track) {
+  return BASE_COLS.concat(FIELDS[track].map(f => LABELS[f] || f));
+}
 
 function sheetFor_(track) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sh = ss.getSheetByName(TABS[track]);
   if (!sh) {
     sh = ss.insertSheet(TABS[track]);
-    const headers = BASE_COLS.concat(FIELDS[track].map(f => LABELS[f] || f));
+    const headers = headersFor_(track);
     sh.appendRow(headers);
     sh.setFrozenRows(1);
     sh.getRange(1, 1, 1, headers.length).setFontWeight('bold');
+  } else {
+    ensureHeaders_(sh, track);
   }
   return sh;
+}
+
+function ensureHeaders_(sh, track) {
+  const wanted = headersFor_(track);
+  const lastCol = Math.max(sh.getLastColumn(), 1);
+  const have = sh.getRange(1, 1, 1, lastCol).getValues()[0].map(String);
+  wanted.forEach(h => {
+    if (have.indexOf(h) === -1) {
+      sh.getRange(1, have.length + 1).setValue(h).setFontWeight('bold');
+      have.push(h);
+    }
+  });
 }
 
 function counts_(track) {
@@ -88,11 +115,12 @@ function counts_(track) {
   };
 }
 
-function newCode_(track) {
+function newCode_(role) {
   const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let s = '';
   for (let i = 0; i < 6; i++) s += a.charAt(Math.floor(Math.random() * a.length));
-  return (track === 'supplier' ? 'S-' : 'R-') + s;
+  const prefix = role === 'supplier' ? 'S-' : role === 'reseller' ? 'R-' : 'B-';
+  return prefix + s;
 }
 
 function creditReferrer_(code) {
@@ -118,8 +146,42 @@ function clean_(v) {
   return s;
 }
 
+function fieldVal_(d, f, track) {
+  if (f === 'monthlyOrders' && (d.role === 'both' || d.track === 'both') && track === 'reseller' && d.resellerMonthlyOrders) {
+    return d.resellerMonthlyOrders;
+  }
+  if (f === 'monthlyOrders' && track === 'reseller' && !d.monthlyOrders && d.resellerMonthlyOrders) {
+    return d.resellerMonthlyOrders;
+  }
+  return d[f];
+}
+
 function json_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function appendApplication_(track, d, code, referredBy) {
+  const sh = sheetFor_(track);
+  const c = counts_(track);
+  const status = c.founding < LIMITS[track] ? 'founding' : 'waitlist';
+  const position = status === 'founding' ? c.founding + 1 : c.waitlist + 1;
+  const headers = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  const row = headers.map(h => {
+    if (h === 'Timestamp') return new Date();
+    if (h === 'Status') return status;
+    if (h === 'Position') return position;
+    if (h === 'Referral code') return code;
+    if (h === 'Referred by') return referredBy;
+    if (h === 'Referrals') return 0;
+    if (h === 'Review') return 'New';
+    if (h === 'Role') return clean_(d.role || d.track || track);
+    if (h === 'Helper: has own stock') return clean_(d.helperHasOwnStock || '');
+    if (h === 'Helper: wants others to sell') return clean_(d.helperWantOthersToSell || '');
+    const field = Object.keys(LABELS).find(k => LABELS[k] === h);
+    return field ? clean_(fieldVal_(d, field, track)) : '';
+  });
+  sh.appendRow(row);
+  return { status: status, position: position, referralCode: code };
 }
 
 function doGet(e) {
@@ -137,22 +199,31 @@ function doPost(e) {
   lock.waitLock(20000);
   try {
     const d = JSON.parse(e.postData.contents || '{}');
-    const track = d.track === 'reseller' ? 'reseller' : 'supplier';
+    let role = d.role || d.track;
+    if (role !== 'reseller' && role !== 'both') role = 'supplier';
     if (!d.whatsapp || !d.contactName) return json_({ ok: false, error: 'Missing name or WhatsApp' });
 
-    const sh = sheetFor_(track);
-    const c = counts_(track);
-    const status = c.founding < LIMITS[track] ? 'founding' : 'waitlist';
-    const position = status === 'founding' ? c.founding + 1 : c.waitlist + 1;
-    const code = newCode_(track);
     const referredBy = clean_(d.referredBy || '').replace(/[^A-Z0-9-]/gi, '').slice(0, 16);
+    const code = newCode_(role);
 
-    const row = [new Date(), status, position, code, referredBy, 0, 'New']
-      .concat(FIELDS[track].map(f => clean_(d[f])));
-    sh.appendRow(row);
+    if (role === 'both') {
+      const supplier = appendApplication_('supplier', d, code, referredBy);
+      const reseller = appendApplication_('reseller', d, code, referredBy);
+      creditReferrer_(referredBy);
+      return json_({
+        ok: true,
+        role: 'both',
+        status: supplier.status,
+        position: supplier.position,
+        referralCode: code,
+        supplier: supplier,
+        reseller: reseller,
+      });
+    }
+
+    const result = appendApplication_(role, d, code, referredBy);
     creditReferrer_(referredBy);
-
-    return json_({ ok: true, status: status, position: position, referralCode: code });
+    return json_(Object.assign({ ok: true, role: role }, result));
   } catch (err) {
     return json_({ ok: false, error: String(err) });
   } finally {
@@ -166,7 +237,8 @@ function doPost(e) {
 - **Moving people up:** sort the waitlist rows by **Referrals** (largest first), then by **Timestamp**. That is the "move up by inviting others" order.
 - **Review column:** your team sets it to `Approved`, `Rejected` or `Call back`. Only approved founding applicants get the founding member benefits.
 - **Opening a spot:** if you reject a founding applicant, change the first waitlisted person's Status to `founding` and message them on WhatsApp.
-- **Duplicates:** the same WhatsApp number may apply twice. Use **Data → Data cleanup → Remove duplicates** on the WhatsApp column.
+- **Duplicates:** the same WhatsApp number may apply twice (and a "both" application appears on both tabs). Use **Data → Data cleanup → Remove duplicates** on the WhatsApp column within each tab.
+- **Both-role applications:** look for Role `both` and a referral code starting with `B-`. Review both rows; a person can be founding on one tab and waitlisted on the other.
 
 ## Privacy
 

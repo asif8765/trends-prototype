@@ -32,9 +32,6 @@
     };
   </script>
   <link rel="stylesheet" href="./css/app.css" />
-  
-
-
 </head>
 <body data-layout="public" data-page="apply" class="bg-paper text-ink">
   <div id="site-nav"></div>
@@ -66,32 +63,105 @@
 </section>
 
 <section class="max-w-3xl mx-auto px-4 py-8" id="form-wrap">
-  <h2 class="font-display text-2xl">Who are you? <span class="ur-hint">آپ کون ہیں؟</span></h2>
-  <div class="grid sm:grid-cols-2 gap-3 mt-3">
-    <button type="button" class="track-card on" data-track="supplier">
-      <div class="text-3xl">🏭</div>
-      <div class="font-bold text-lg mt-1">Supplier / Wholesaler</div>
-      <div class="text-sm text-muted">I have products and want stores to sell them</div>
-      <div class="ur-hint">سپلائر / ہول سیلر</div>
-    </button>
-    <button type="button" class="track-card" data-track="reseller">
-      <div class="text-3xl">🛍️</div>
-      <div class="font-bold text-lg mt-1">Store owner / Reseller</div>
-      <div class="text-sm text-muted">I want products to sell in my online store</div>
-      <div class="ur-hint">اسٹور مالک / ری سیلر</div>
-    </button>
+
+  <div id="role-step">
+    <h2 class="font-display text-2xl">Which one is you?</h2>
+    <p class="ur-hint text-base mt-1">آپ کون ہیں؟</p>
+    <p class="clarify-note mt-3">This is not about who sells to customers — both sides can sell. The difference is who keeps the stock and packs the orders.</p>
+    <p class="ur-hint mt-1">یہ اس بارے میں نہیں کہ کون گاہکوں کو بیچتا ہے۔ دونوں بیچ سکتے ہیں۔ فرق یہ ہے کہ مال کس کے پاس رہتا ہے اور پیک کون کرتا ہے۔</p>
+
+    <div class="grid sm:grid-cols-2 gap-4 mt-5">
+      <button type="button" class="role-card" data-pick="supplier" id="card-supplier">
+        <div class="text-3xl" aria-hidden="true">📦</div>
+        <div class="role-title mt-2">I have my own stock / I make or import products</div>
+        <div class="ur-hint mt-1">میرے پاس اپنا مال / سٹاک ہے</div>
+        <p class="role-desc mt-2">You keep the goods, pack and hand them to the courier. Store owners sell your products for you.</p>
+        <p class="role-ex mt-2"><span>Examples:</span> wholesaler, factory/manufacturer, importer, brand owner, shop with bulk stock.</p>
+        <div class="role-join mt-3">Join as Supplier (Wholesaler)</div>
+      </button>
+      <button type="button" class="role-card" data-pick="reseller" id="card-reseller">
+        <div class="text-3xl" aria-hidden="true">🛍️</div>
+        <div class="role-title mt-2">I want to sell online without keeping stock</div>
+        <div class="ur-hint mt-1">میں بغیر سٹاک کے آن لائن بیچنا چاہتا ہوں</div>
+        <p class="role-desc mt-2">You pick products, put them on your page or website and get orders. We and the supplier handle packing and delivery. You keep your profit.</p>
+        <p class="role-ex mt-2"><span>Examples:</span> Facebook/Instagram/TikTok page, Shopify/WooCommerce store, WhatsApp seller, student/freelancer starting a business.</p>
+        <div class="role-join mt-3 accent">Join as Store Owner (Reseller)</div>
+      </button>
+    </div>
+
+    <p class="text-center mt-5">
+      <button type="button" class="both-link" id="pick-both" data-pick="both">I do both</button>
+      <span class="ur-hint block mt-0.5">میں دونوں کام کرتا ہوں — میرے پاس سٹاک بھی ہے اور میں آن لائن بھی بیچتا ہوں</span>
+      <span class="block text-xs text-muted mt-1">Fill the supplier form first, then the store-owner questions. We save one application for both.</span>
+    </p>
+
+    <div class="text-center mt-4" id="not-sure">
+      <button type="button" class="helper-toggle" id="open-helper">Not sure? Answer 2 questions</button>
+      <span class="ur-hint block">یقین نہیں؟ صرف دو سوالوں کے جواب دیں</span>
+    </div>
+
+    <div id="helper" class="card p-5 mt-3 hidden">
+      <h3 class="font-semibold">Answer 2 questions</h3>
+      <p class="ur-hint">دو سوال</p>
+      <fieldset class="mt-4" id="helper-q1-wrap">
+        <legend class="font-semibold">Q1. Do you have your own stock of goods ready to ship?</legend>
+        <p class="ur-hint mb-2">کیا آپ کے پاس بھیجنے کے لیے اپنا مال / سٹاک موجود ہے؟</p>
+        <div class="grid grid-cols-2 gap-2">
+          <label class="choice"><input type="radio" name="helperQ1" value="Yes" />Yes</label>
+          <label class="choice"><input type="radio" name="helperQ1" value="No" />No</label>
+        </div>
+      </fieldset>
+      <fieldset class="mt-4 hidden" id="helper-q2-wrap">
+        <legend class="font-semibold">Q2. Do you want other sellers to sell your goods for you?</legend>
+        <p class="ur-hint mb-2">کیا آپ چاہتے ہیں کہ دوسرے بیچنے والے آپ کا مال بیچیں؟</p>
+        <div class="grid grid-cols-2 gap-2">
+          <label class="choice"><input type="radio" name="helperQ2" value="Yes" />Yes</label>
+          <label class="choice"><input type="radio" name="helperQ2" value="No" />No</label>
+        </div>
+      </fieldset>
+      <div id="helper-result" class="helper-result hidden mt-4"></div>
+    </div>
+
+    <div class="compare-strip mt-8" id="compare">
+      <h3 class="font-semibold">How the two sides differ</h3>
+      <p class="ur-hint">دونوں میں فرق</p>
+      <div class="compare-grid mt-3">
+        <div class="compare-col head muted"> </div>
+        <div class="compare-col head">Supplier (Wholesaler) — I have stock</div>
+        <div class="compare-col head">Store owner (Reseller) — I sell online</div>
+
+        <div class="compare-col label">Who keeps stock<div class="ur-hint">مال کس کے پاس رہتا ہے</div></div>
+        <div class="compare-col">You do. You make, import or already hold the goods.</div>
+        <div class="compare-col">The supplier does. You do not keep a warehouse.</div>
+
+        <div class="compare-col label">Who packs &amp; ships<div class="ur-hint">پیک اور بھیجنے کا کام</div></div>
+        <div class="compare-col">You pack and hand the parcel to the courier.</div>
+        <div class="compare-col">We and the supplier handle packing and delivery.</div>
+
+        <div class="compare-col label">How you earn<div class="ur-hint">کمائی کیسے ہوتی ہے</div></div>
+        <div class="compare-col">Wholesale price paid after delivery.</div>
+        <div class="compare-col">Your profit margin above wholesale.</div>
+
+        <div class="compare-col label">Monthly fee<div class="ur-hint">ماہانہ فیس</div></div>
+        <div class="compare-col">Free to list. Suppliers pay nothing to join or list products.</div>
+        <div class="compare-col">Subscription after launch. You pay nothing until business starts. <a href="pricing.html">See example plans</a>.</div>
+      </div>
+    </div>
   </div>
 
-  <form id="apply-form" class="card p-5 mt-5 space-y-4" novalidate>
-    <div id="fields"></div>
-    <label class="rights-box"><input type="checkbox" name="consent" required /><span>I agree that the team can contact me on WhatsApp about this application. My details are used only for early-access review.</span></label>
-    <div class="free-apply compact">
-      <p>Applying is free. You pay nothing until the platform goes live for business in the coming weeks.</p>
-      <p class="ur-hint mt-1">درخواست دینا بالکل مفت ہے۔ جب تک کاروبار شروع نہیں ہوتا، آپ سے کوئی فیس نہیں لی جائے گی۔</p>
-    </div>
-    <button type="submit" class="btn-primary btn-big w-full" id="submit-btn">Submit application</button>
-    <p class="text-xs text-center text-muted" id="mode-note"></p>
-  </form>
+  <div id="form-step" class="hidden">
+    <div class="role-banner" id="role-banner"></div>
+    <form id="apply-form" class="card p-5 mt-4 space-y-4" novalidate>
+      <div id="fields"></div>
+      <label class="rights-box"><input type="checkbox" name="consent" required /><span>I agree that the team can contact me on WhatsApp about this application. My details are used only for early-access review.</span></label>
+      <div class="free-apply compact">
+        <p>Applying is free. You pay nothing until the platform goes live for business in the coming weeks.</p>
+        <p class="ur-hint mt-1">درخواست دینا بالکل مفت ہے۔ جب تک کاروبار شروع نہیں ہوتا، آپ سے کوئی فیس نہیں لی جائے گی۔</p>
+      </div>
+      <button type="submit" class="btn-primary btn-big w-full" id="submit-btn">Submit application</button>
+      <p class="text-xs text-center text-muted" id="mode-note"></p>
+    </form>
+  </div>
 </section>
 
 <section class="max-w-2xl mx-auto px-4 py-10 hidden" id="result">
