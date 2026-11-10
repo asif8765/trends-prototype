@@ -40,6 +40,14 @@
     // keep as authored
   }
 
+  (function loadUrduFont() {
+    if (document.getElementById("urdu-font")) return;
+    var l = document.createElement("link");
+    l.id = "urdu-font"; l.rel = "stylesheet";
+    l.href = "https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600&display=swap";
+    document.head.appendChild(l);
+  })();
+
   var layout = document.body.getAttribute("data-layout") || "public";
   mountRibbon();
   if (layout === "public") mountPublicNav();
@@ -81,11 +89,12 @@
       item("suppliers", "For suppliers", "for-suppliers.html") +
       item("pricing", "Pricing", "pricing.html") +
       item("policies", "Policies", "policies.html") +
+      item("apply", "Apply for early access", "apply.html") +
       "</nav>" +
       '<div class="flex items-center gap-2">' +
       '<button class="md:hidden btn-ghost btn-sm" data-open-nav aria-label="Open menu">Menu</button>' +
       '<a class="btn-ghost btn-sm hidden sm:inline-flex" href="' + href("auth/signup.html") + '">Log in</a>' +
-      '<a class="btn-primary btn-sm" href="' + href("auth/signup.html") + '">Start</a>' +
+      '<a class="btn-accent btn-sm" href="' + href("apply.html") + '">Apply</a>' +
       "</div></div>" +
       '<div class="hidden md:hidden border-t border-line px-4 pb-4" id="mobile-public-nav">' +
       item("how", "How it works", "how-it-works.html") +
@@ -93,6 +102,7 @@
       item("suppliers", "For suppliers", "for-suppliers.html") +
       item("pricing", "Pricing", "pricing.html") +
       item("policies", "Policies", "policies.html") +
+      item("apply", "Apply for early access", "apply.html") +
       "</div></header>";
     var btn = host.querySelector("[data-open-nav]");
     var panel = host.querySelector("#mobile-public-nav");
@@ -122,16 +132,17 @@
     var page = document.body.getAttribute("data-page") || "";
     var links = {
       reseller: [
-        ["dashboard", "Overview", "reseller/dashboard.html"],
-        ["catalog", "Catalog", "reseller/catalog.html"],
-        ["orders", "Orders", "reseller/orders.html"],
+        ["dashboard", "Home", "reseller/dashboard.html"],
+        ["catalog", "Find products", "reseller/catalog.html"],
+        ["orders", "My orders", "reseller/orders.html"],
         ["payouts", "Payouts", "reseller/payouts.html"],
         ["health", "Account Health", "reseller/account-health.html"],
         ["settings", "Settings", "reseller/settings.html"],
       ],
       supplier: [
-        ["dashboard", "Overview", "supplier/dashboard.html"],
-        ["products", "Listings", "supplier/products.html"],
+        ["dashboard", "Home", "supplier/dashboard.html"],
+        ["ai", "✨ Create listing with AI", "supplier/ai-listing.html"],
+        ["products", "My products", "supplier/products.html"],
         ["orders", "Orders to dispatch", "supplier/orders.html"],
         ["payouts", "Payouts", "supplier/payouts.html"],
         ["health", "Account Health", "supplier/account-health.html"],
@@ -183,6 +194,36 @@
       '<span class="badge badge-neutral">Demo</span></div>';
 
     host.insertAdjacentHTML("afterbegin", aside + top);
+    mountTabbar(role, page);
+  }
+
+  function mountTabbar(role, page) {
+    var tabs = {
+      reseller: [
+        ["dashboard", "🏠", "Home", "reseller/dashboard.html"],
+        ["catalog", "🔎", "Find", "reseller/catalog.html"],
+        ["orders", "📦", "Orders", "reseller/orders.html"],
+        ["payouts", "💰", "Payouts", "reseller/payouts.html"],
+        ["health", "❤️", "Health", "reseller/account-health.html"],
+      ],
+      supplier: [
+        ["dashboard", "🏠", "Home", "supplier/dashboard.html"],
+        ["orders", "📦", "Dispatch", "supplier/orders.html"],
+        ["ai", "✨", "AI listing", "supplier/ai-listing.html", "cta"],
+        ["payouts", "💰", "Payouts", "supplier/payouts.html"],
+        ["health", "❤️", "Health", "supplier/account-health.html"],
+      ],
+    }[role];
+    if (!tabs || document.querySelector(".tabbar")) return;
+    var nav = document.createElement("nav");
+    nav.className = "tabbar";
+    nav.setAttribute("aria-label", "Main");
+    nav.innerHTML = tabs.map(function (t) {
+      var cls = (page === t[0] ? "active " : "") + (t[4] || "");
+      return '<a class="' + cls + '" href="' + href(t[3]) + '"><span class="ti">' + t[1] + "</span>" + t[2] + "</a>";
+    }).join("");
+    document.body.appendChild(nav);
+    document.body.classList.add("has-tabbar");
   }
 
   function mountFooter(layout) {

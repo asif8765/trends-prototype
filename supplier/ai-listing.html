@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en-PK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{Brand} — Create listing with AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="../brand.config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "var(--color-primary)",
+            ink: "var(--color-ink)",
+            paper: "var(--color-paper)",
+            muted: "var(--color-muted)",
+            line: "var(--color-line)",
+            surface: "var(--color-surface)",
+            accent: "var(--color-accent)",
+          },
+          fontFamily: {
+            sans: ["Plus Jakarta Sans", "sans-serif"],
+            display: ["Fraunces", "Georgia", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="stylesheet" href="../css/app.css" />
+</head>
+
+<body data-layout="supplier" data-page="ai" class="bg-paper text-ink">
+  <div id="app-shell" class="app-shell">
+    <div class="flex-1 min-w-0 flex flex-col">
+      <main id="app-main" class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-6xl w-full mx-auto">
+<div class="flex items-start justify-between gap-4 flex-wrap">
+  <div>
+    <p class="kicker">Supplier · AI listing builder</p>
+    <h1 class="font-display text-3xl mt-1">Create listing with AI</h1>
+    <p class="text-sm text-muted mt-1">Add photos or a video. AI writes the rest in English and Urdu. You check it, add your price and stock, and publish.</p>
+    <p class="ur-hint mt-1">تصویریں ڈالیں — باقی کام AI کرے گا۔ آپ صرف قیمت اور اسٹاک لکھیں۔</p>
+  </div>
+  <div class="mode-toggle" role="tablist" aria-label="Listing mode">
+    <button type="button" class="on" data-mode="single">One product</button>
+    <button type="button" data-mode="bulk">Many products</button>
+  </div>
+</div>
+
+<div class="stepper mt-5" id="stepper">
+  <div class="st on" data-st="1"><span class="n">1</span><span class="t">Add photos</span></div>
+  <div class="st" data-st="2"><span class="n">2</span><span class="t">AI builds it</span></div>
+  <div class="st" data-st="3"><span class="n">3</span><span class="t">Check &amp; publish</span></div>
+</div>
+
+<!-- STEP 1: SINGLE -->
+<section id="step1-single" class="mt-5 grid lg:grid-cols-5 gap-4">
+  <div class="card p-5 lg:col-span-3">
+    <h2 class="font-semibold text-lg">1. Add photos or videos <span class="ur-hint">تصاویر یا ویڈیو</span></h2>
+    <label class="drop-zone block mt-3" id="drop" for="media">
+      <input id="media" type="file" accept="image/*,video/*" multiple class="hidden" />
+      <div class="text-4xl">🖼️</div>
+      <div class="font-bold text-lg mt-2">Tap to add photos or videos</div>
+      <div class="text-sm text-muted">or drag and drop here · up to 10 photos and 2 videos</div>
+      <div class="ur-hint">یہاں ٹیپ کریں</div>
+    </label>
+    <div class="grid grid-cols-2 gap-3 mt-3">
+      <label class="btn-ghost btn-big justify-center cursor-pointer" for="cam-photo">📷 Take photo
+        <input id="cam-photo" type="file" accept="image/*" capture="environment" class="hidden" /></label>
+      <label class="btn-ghost btn-big justify-center cursor-pointer" for="cam-video">🎥 Record video
+        <input id="cam-video" type="file" accept="video/*" capture="environment" class="hidden" /></label>
+    </div>
+    <div class="flex items-center justify-between mt-4">
+      <span class="text-sm font-semibold"><span id="media-count">0</span> added</span>
+      <button type="button" class="text-sm text-primary underline" id="use-demo">No photos handy? Use demo photos</button>
+    </div>
+    <div class="thumb-grid mt-3" id="thumbs"></div>
+    <p class="text-xs text-muted mt-3">Tip: one photo on a plain surface and one in use is enough. AI removes the background and fixes light.</p>
+  </div>
+
+  <div class="card p-5 lg:col-span-2">
+    <h2 class="font-semibold text-lg">2. Tell AI about it <span class="text-sm text-muted font-normal">(optional)</span></h2>
+    <p class="ur-hint">چند الفاظ اردو یا انگریزی میں لکھیں یا بولیں</p>
+    <label class="field mt-3" for="social">Paste your Facebook / Instagram / TikTok / YouTube post</label>
+    <input id="social" placeholder="https://www.instagram.com/reel/..." inputmode="url" />
+    <label class="field mt-4" for="notes">A few words in Urdu or English</label>
+    <textarea id="notes" rows="3" placeholder="e.g. steel bottle 1 litre, 4 colour, thanda 24 ghante"></textarea>
+    <button type="button" class="btn-ghost w-full justify-center mt-2" id="mic">🎤 Speak instead (Urdu / English)</button>
+    <p class="text-xs text-muted mt-2" id="mic-status">Voice is a demo here. In the live app it converts speech to text.</p>
+  </div>
+
+  <div class="lg:col-span-5">
+    <button type="button" class="btn-primary btn-big w-full" id="build">✨ Build my listing with AI</button>
+    <p class="text-center text-xs text-muted mt-2">Takes about 20–40 seconds in the live app. Nothing is published until you press Publish.</p>
+  </div>
+</section>
+
+<!-- STEP 1: BULK -->
+<section id="step1-bulk" class="mt-5 hidden">
+  <div class="card p-5">
+    <h2 class="font-semibold text-lg">Make many listings at once <span class="ur-hint">ایک ساتھ بہت سی پروڈکٹس</span></h2>
+    <p class="text-sm text-muted mt-1">Upload your whole photo folder, a spreadsheet, or your WhatsApp catalog. AI groups the photos by product and creates a draft for each one.</p>
+    <div class="grid md:grid-cols-3 gap-3 mt-4">
+      <label class="drop-zone block" for="bulk-photos">
+        <input id="bulk-photos" type="file" accept="image/*,video/*" multiple class="hidden" />
+        <div class="text-3xl">🗂️</div>
+        <div class="font-bold mt-1">Many photos</div>
+        <div class="text-xs text-muted">Select all product photos from your phone gallery</div>
+      </label>
+      <label class="drop-zone block" for="bulk-folder">
+        <input id="bulk-folder" type="file" webkitdirectory directory multiple class="hidden" />
+        <div class="text-3xl">📁</div>
+        <div class="font-bold mt-1">A whole folder</div>
+        <div class="text-xs text-muted">On a computer: one folder per product works best</div>
+      </label>
+      <label class="drop-zone block" for="bulk-csv">
+        <input id="bulk-csv" type="file" accept=".csv,.xlsx,.xls,.txt,.zip" class="hidden" />
+        <div class="text-3xl">📄</div>
+        <div class="font-bold mt-1">CSV / Excel / WhatsApp export</div>
+        <div class="text-xs text-muted">Product name, price, stock, photo links</div>
+      </label>
+    </div>
+    <div class="grid md:grid-cols-2 gap-3 mt-4">
+      <div>
+        <label class="field" for="wa-cat">WhatsApp Business catalog link</label>
+        <input id="wa-cat" placeholder="https://wa.me/c/92XXXXXXXXXX" inputmode="url" />
+      </div>
+      <div class="flex items-end"><button type="button" class="btn-ghost w-full justify-center" id="csv-template">⬇ Download CSV template</button></div>
+    </div>
+    <p class="text-sm font-semibold mt-4" id="bulk-status">Nothing uploaded yet. <button type="button" class="text-primary underline" id="bulk-demo">Use demo catalog (24 photos)</button></p>
+  </div>
+  <button type="button" class="btn-primary btn-big w-full mt-4" id="build-bulk">✨ Build all drafts with AI</button>
+</section>
+
+<!-- STEP 2 -->
+<section id="step2" class="mt-5 hidden">
+  <div class="card p-6 max-w-2xl mx-auto">
+    <div class="flex items-center justify-between gap-3">
+      <h2 class="font-display text-2xl">AI is building your listing…</h2>
+      <span class="font-display text-2xl text-primary" id="pct">0%</span>
+    </div>
+    <p class="ur-hint">AI آپ کی لسٹنگ بنا رہا ہے</p>
+    <div class="progress mt-3"><span id="bar" style="width:0%"></span></div>
+    <div class="mt-4" id="tasks"></div>
+    <button type="button" class="btn-ghost btn-sm mt-4" id="skip">Skip animation</button>
+  </div>
+</section>
+
+<!-- STEP 3: SINGLE REVIEW -->
+<section id="step3-single" class="mt-5 hidden">
+  <div class="card p-4 border-l-4" style="border-left-color:var(--color-success)">
+    <strong>Your listing is ready to check.</strong> Fields marked <span class="conf hi">High</span> <span class="conf md">Check</span> <span class="conf lo">Please confirm</span> show how sure the AI is. Everything is editable.
+    <div class="ur-hint">سب کچھ تبدیل کیا جا سکتا ہے۔ صرف تین چیزیں آپ کو لکھنی ہیں۔</div>
+  </div>
+
+  <div class="grid lg:grid-cols-5 gap-4 mt-4">
+    <div class="lg:col-span-2 space-y-4">
+      <div class="card p-5" style="border:2px solid var(--color-accent)">
+        <h3 class="font-semibold text-lg">Only 3 things from you</h3>
+        <p class="ur-hint">صرف یہ تین چیزیں لکھیں</p>
+        <div class="mt-3 space-y-3">
+          <div>
+            <div class="field-row"><label for="r-wholesale">Your wholesale price (PKR) <span class="ur-hint">ہول سیل قیمت</span></label><span class="req">Required</span></div>
+            <input id="r-wholesale" type="number" inputmode="numeric" placeholder="e.g. 880" class="text-lg" />
+            <p class="text-xs text-muted mt-1">AI suggestion from 37 similar items: <strong>Rs 820 – 950</strong></p>
+          </div>
+          <div>
+            <div class="field-row"><label for="r-stock">Stock you have <span class="ur-hint">اسٹاک</span></label><span class="req">Required</span></div>
+            <input id="r-stock" type="number" inputmode="numeric" placeholder="e.g. 200" class="text-lg" />
+          </div>
+          <div>
+            <div class="field-row"><label for="r-city">Dispatch city <span class="ur-hint">کہاں سے بھیجیں گے</span></label><span class="req">Required</span></div>
+            <select id="r-city" class="text-lg"></select>
+            <p class="text-xs text-muted mt-1">Filled from your profile. Change if this item ships from another warehouse.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card p-5">
+        <div class="flex justify-between items-center"><h3 class="font-semibold">Photos — cleaned by AI</h3><label class="text-xs flex items-center gap-1"><input type="checkbox" id="show-orig" style="width:auto" /> Show originals</label></div>
+        <div class="thumb-grid mt-3" id="r-photos"></div>
+        <p class="text-xs text-muted mt-2">Background removed, light and colour fixed, cropped square for stores.</p>
+      </div>
+
+      <div class="card p-5">
+        <div class="flex justify-between items-center"><h3 class="font-semibold">Video cuts for ads</h3><span class="conf hi">High</span></div>
+        <div class="flex flex-wrap gap-3 mt-3 items-end" id="r-cuts"></div>
+        <p class="text-xs text-muted mt-2">Trimmed from your video with Urdu captions burned in. Resellers can import them if you allow ads use.</p>
+        <div class="grid sm:grid-cols-2 gap-2 mt-3">
+          <label class="perm-toggle"><input type="checkbox" checked /><span><strong>Allowed in reseller stores</strong></span></label>
+          <label class="perm-toggle"><input type="checkbox" checked /><span><strong>Allowed in paid ads</strong></span></label>
+        </div>
+      </div>
+
+      <div class="card p-5">
+        <h3 class="font-semibold">Policy check</h3>
+        <div class="mt-2" id="r-policy"></div>
+      </div>
+    </div>
+
+    <div class="lg:col-span-3 space-y-4">
+      <div class="card p-5 space-y-4">
+        <div>
+          <div class="field-row"><label for="r-title">Title (English)</label><span class="conf hi">High · 94%</span></div>
+          <input id="r-title" />
+        </div>
+        <div>
+          <div class="field-row"><label for="r-title-ur">Title (Urdu)</label><span class="conf md">Check · 81%</span></div>
+          <input id="r-title-ur" class="ur" dir="rtl" />
+        </div>
+        <div>
+          <div class="field-row"><label for="r-bullets">Key points (one per line)</label><span class="conf hi">High · 90%</span></div>
+          <textarea id="r-bullets" rows="5"></textarea>
+        </div>
+        <div>
+          <div class="field-row"><label for="r-desc">Description (English)</label><span class="conf hi">High · 89%</span></div>
+          <textarea id="r-desc" rows="4"></textarea>
+        </div>
+        <div>
+          <div class="field-row"><label for="r-desc-ur">Description (Urdu)</label><span class="conf md">Check · 80%</span></div>
+          <textarea id="r-desc-ur" rows="4" class="ur" dir="rtl"></textarea>
+        </div>
+      </div>
+
+      <div class="card p-5 grid sm:grid-cols-2 gap-4">
+        <div>
+          <div class="field-row"><label for="r-cat">Category</label><span class="conf hi">High · 97%</span></div>
+          <select id="r-cat"></select>
+        </div>
+        <div>
+          <div class="field-row"><label for="r-material">Material</label><span class="conf hi">High · 92%</span></div>
+          <input id="r-material" />
+        </div>
+        <div class="sm:col-span-2">
+          <div class="field-row"><label>Colours found in photos</label><span class="conf md">Check · 76%</span></div>
+          <div class="flex flex-wrap gap-2" id="r-colours"></div>
+        </div>
+        <div class="sm:col-span-2">
+          <div class="field-row"><label>Sizes</label><span class="conf lo">Please confirm · 58%</span></div>
+          <div class="flex flex-wrap gap-2" id="r-sizes"></div>
+          <p class="text-xs text-muted mt-1">AI read “1 litre” from your note but couldn't see the size on the bottle.</p>
+        </div>
+      </div>
+
+      <div class="card p-5 grid sm:grid-cols-2 gap-4">
+        <div>
+          <div class="field-row"><label for="r-resale">Suggested resale price</label><span class="conf md">Check · 78%</span></div>
+          <input id="r-resale" type="number" />
+        </div>
+        <div>
+          <div class="field-row"><label for="r-map">Minimum resale price (MAP)</label><span class="conf md">Check · 78%</span></div>
+          <input id="r-map" type="number" />
+        </div>
+        <p class="sm:col-span-2 text-xs text-muted -mt-2" id="r-margin">Based on 37 similar items sold on Pakistani stores in the last 60 days (demo).</p>
+        <div>
+          <div class="field-row"><label for="r-weight">Packed weight (kg)</label><span class="conf lo">Please confirm · 61%</span></div>
+          <input id="r-weight" type="number" step="0.05" />
+        </div>
+        <div>
+          <div class="field-row"><label for="r-dims">Box size L × W × H (cm)</label><span class="conf lo">Please confirm · 60%</span></div>
+          <input id="r-dims" />
+        </div>
+        <p class="sm:col-span-2 text-xs text-muted -mt-2">Used to quote courier charges. Weigh one packed unit once to be sure.</p>
+      </div>
+
+      <div class="card p-5">
+        <div class="field-row"><label>Search tags (SEO)</label><span class="conf hi">High · 88%</span></div>
+        <div class="flex flex-wrap gap-2" id="r-tags"></div>
+      </div>
+
+      <div class="card p-5 space-y-3">
+        <div class="flex justify-between items-center"><h3 class="font-semibold">Ready-made ad captions</h3><span class="conf hi">High · 87%</span></div>
+        <div><label class="field" for="r-cap-en">English</label><textarea id="r-cap-en" rows="2"></textarea></div>
+        <div><label class="field" for="r-cap-roman">Roman Urdu</label><textarea id="r-cap-roman" rows="2"></textarea></div>
+        <div><label class="field" for="r-cap-ur">Urdu</label><textarea id="r-cap-ur" rows="2" class="ur" dir="rtl"></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card p-3 sm:p-4 mt-4 sticky bottom-20 lg:bottom-4 z-30 flex flex-col sm:flex-row gap-3 items-center justify-between" style="box-shadow:var(--shadow-md)">
+    <p class="text-sm text-muted hidden sm:block">You approve every AI listing. Nothing goes live until you press Publish.</p>
+    <div class="flex gap-2 w-full sm:w-auto">
+      <button type="button" class="btn-ghost btn-big flex-1 sm:flex-none justify-center" id="save-draft">Save draft</button>
+      <button type="button" class="btn-primary btn-big flex-1 sm:flex-none" id="publish">Publish</button>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3: BULK REVIEW -->
+<section id="step3-bulk" class="mt-5 hidden">
+  <div class="card p-4 border-l-4" style="border-left-color:var(--color-success)">
+    <strong><span id="bulk-n">8</span> draft listings created from 24 photos.</strong> Add wholesale price and stock for each, then publish the ready ones. Tap <em>Review</em> to edit everything.
+  </div>
+  <div class="flex flex-wrap gap-2 items-center justify-between mt-4">
+    <label class="text-sm flex items-center gap-2"><input type="checkbox" id="bulk-all" style="width:auto" /> Select all</label>
+    <div class="flex gap-2">
+      <button type="button" class="btn-ghost" id="bulk-draft">Save all as drafts</button>
+      <button type="button" class="btn-primary" id="bulk-publish">Publish selected</button>
+    </div>
+  </div>
+  <div class="grid md:grid-cols-2 gap-3 mt-3" id="bulk-list"></div>
+</section>
+
+<div id="done-modal" class="modal-backdrop hidden">
+  <div class="modal text-center">
+    <div class="text-5xl">🎉</div>
+    <h2 class="font-display text-2xl mt-2" id="done-title">Published (demo)</h2>
+    <p class="text-sm text-muted mt-2" id="done-text">After a quick automatic check, resellers can import it with photos, video and captions.</p>
+    <div class="flex flex-col sm:flex-row gap-2 mt-5 justify-center">
+      <a class="btn-ghost justify-center" href="ai-listing.html" id="again">Create another</a>
+      <a class="btn-primary" href="products.html">Go to my products</a>
+    </div>
+  </div>
+</div>
+
+      </main>
+      <div id="site-footer"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/layout.js"></script>
+  <script src="../js/ai-listing.js"></script>
+  <script>document.title = BRAND.name + " — Create listing with AI";</script>
+</body></html>

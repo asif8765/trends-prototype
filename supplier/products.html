@@ -43,8 +43,16 @@
     <h1 class="font-display text-3xl mt-1">Products</h1>
     <p class="text-sm text-muted mt-1">MAP, stock sync, daily order caps, and product videos. Demo catalog for Lahore Home Goods.</p>
   </div>
-  <button class="btn-primary" type="button" id="add-listing-btn">Add listing</button>
+  <div class="flex flex-wrap gap-2">
+    <a class="btn-primary btn-big" href="ai-listing.html">✨ Create listing with AI</a>
+    <button class="btn-ghost" type="button" id="add-listing-btn">Add manually</button>
+  </div>
 </div>
+<a href="ai-listing.html" class="card p-4 mt-4 flex items-center gap-4 hover:shadow-md" style="background:var(--color-primary-muted)">
+  <span class="text-3xl">📸</span>
+  <span class="flex-1"><strong>Just add photos — AI does the rest.</strong> <span class="text-sm text-muted">Title, Urdu + English description, category, price suggestion, ad captions and video cuts. Have many products? Upload a folder, CSV or WhatsApp catalog.</span><span class="ur-hint block">صرف تصویریں ڈالیں — باقی کام AI کرے گا</span></span>
+  <span class="btn-ghost btn-sm hidden sm:inline-flex">Start</span>
+</a>
 <p class="text-sm mt-4">Daily cap used: <strong id="cap"></strong></p>
 <div class="card mt-4"><div class="table-wrap"><table class="data" id="tbl"></table></div></div>
 

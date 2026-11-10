@@ -29,3 +29,9 @@ OTP accepts any 6 digits. Buttons show toasts instead of calling a backend.
 ## Deploy
 
 The included `Dockerfile` serves the site with nginx on Railway’s `$PORT`.
+
+## New in this version
+
+- `supplier/ai-listing.html` — **Create listing with AI** (simulated). One product or many (folder / CSV / WhatsApp catalog). Deep links: `#demo`, `#review`, `#bulk`, `#bulk-review`.
+- `apply.html` — early-access application + waitlist (80 supplier / 120 store-owner founding spots). Configure `js/apply.config.js` → `FORM_ENDPOINT`. Setup guide: [`docs/google-sheet-setup.md`](./docs/google-sheet-setup.md). Preview the waitlist state with `apply.html?full=1`.
+- Simpler supplier and reseller home screens: 4 big actions, get-started checklist, bottom tab bar on phones, small Urdu hints.
