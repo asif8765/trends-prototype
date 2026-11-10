@@ -76,6 +76,13 @@
           <label class="field" for="listing-sku-display">SKU</label>
           <input id="listing-sku-display" name="skuDisplay" placeholder="TIF-3SS" />
         </div>
+        <div class="sm:col-span-2">
+          <label class="field" for="listing-cat">Category</label>
+          <select id="listing-cat" name="category" required>
+            <option value="">Choose a category…</option>
+          </select>
+          <div id="listing-not-allowed"></div>
+        </div>
         <div>
           <label class="field" for="listing-wholesale">Wholesale (PKR)</label>
           <input id="listing-wholesale" name="wholesale" type="number" min="0" />
@@ -146,6 +153,7 @@
   </div>
 
   <script src="../js/data.js"></script>
+  <script src="../js/categories.js"></script>
   <script src="../js/ui.js"></script>
   <script src="../js/layout.js"></script>
   
@@ -153,6 +161,12 @@
   document.title = BRAND.name + " — Listings";
   var s=DEMO.supplier;
   document.getElementById("cap").textContent = s.usedCap + " / " + s.dailyCap + " orders today";
+  var catSel = document.getElementById("listing-cat");
+  if (catSel && window.TrendsCats) {
+    catSel.innerHTML = '<option value="">Choose a category…</option>' + TrendsCats.optionsHtml("");
+    var note = document.getElementById("listing-not-allowed");
+    if (note) note.innerHTML = TrendsCats.notAllowedNote("../policies.html#prohibited");
+  }
 
   function videoCell(l){
     if (!l.video) return "<span class='text-muted text-sm'>No video</span>";
@@ -168,6 +182,8 @@
     document.getElementById("listing-sku").value = l ? l.sku : "";
     document.getElementById("listing-sku-display").value = l ? l.sku : "";
     document.getElementById("listing-name").value = l ? l.name : "";
+    var catVal = (l && l.cat) || "";
+    document.getElementById("listing-cat").value = catVal;
     document.getElementById("listing-wholesale").value = l ? l.wholesale : "";
     document.getElementById("listing-map").value = l ? l.map : "";
     document.getElementById("listing-stock").value = l ? l.stock : "";
@@ -189,9 +205,9 @@
     openModal("listing-modal");
   }
 
-  document.getElementById("tbl").innerHTML = "<thead><tr><th>SKU</th><th>Name</th><th>Wholesale</th><th>MAP</th><th>Stock</th><th>Daily cap used</th><th>Video</th><th>Status</th><th></th></tr></thead><tbody>"+
+  document.getElementById("tbl").innerHTML = "<thead><tr><th>SKU</th><th>Name</th><th>Category</th><th>Wholesale</th><th>MAP</th><th>Stock</th><th>Daily cap used</th><th>Video</th><th>Status</th><th></th></tr></thead><tbody>"+
     DEMO.listings.map(function(l){
-      return "<tr><td class='font-mono'>"+l.sku+"</td><td>"+l.name+"</td><td>"+DEMO.pkr(l.wholesale)+"</td><td>"+DEMO.pkr(l.map)+"</td><td>"+l.stock+"</td><td>"+l.used+" / "+l.cap+"</td><td>"+videoCell(l)+"</td><td>"+statusBadge(l.status)+"</td><td class='whitespace-nowrap'><button class='btn-ghost btn-sm' type='button' data-edit='"+l.sku+"'>Edit</button> <button class='btn-ghost btn-sm' type='button' onclick=\"toast('Stock sync queued (demo).')\">Sync stock</button></td></tr>";
+      return "<tr><td class='font-mono'>"+l.sku+"</td><td>"+l.name+"</td><td class='text-sm'>"+(l.cat||"—")+"</td><td>"+DEMO.pkr(l.wholesale)+"</td><td>"+DEMO.pkr(l.map)+"</td><td>"+l.stock+"</td><td>"+l.used+" / "+l.cap+"</td><td>"+videoCell(l)+"</td><td>"+statusBadge(l.status)+"</td><td class='whitespace-nowrap'><button class='btn-ghost btn-sm' type='button' data-edit='"+l.sku+"'>Edit</button> <button class='btn-ghost btn-sm' type='button' onclick=\"toast('Stock sync queued (demo).')\">Sync stock</button></td></tr>";
     }).join("")+"</tbody>";
 
   document.getElementById("add-listing-btn").addEventListener("click", function(){ openListing(null); });

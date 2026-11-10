@@ -7,7 +7,7 @@ Until you finish these steps, `apply.html` runs in **demo mode** and only saves 
 ## What you get
 
 - One Google Sheet with two tabs: **Suppliers** and **Resellers**.
-- Every row has a timestamp, status (`founding` or `waitlist`), position number, the applicant's own referral code, who referred them, a referral count and all their answers.
+- Every row has a timestamp, status (`founding` or `waitlist`), position number, the applicant's own referral code, who referred them, a referral count and all their answers. **Categories** is a comma-separated list of official category names. If the applicant picked Other, the typed value is in **Other category**.
 - The live counter on the website shows the real number of spots left (80 suppliers, 120 store owners).
 - Once a track is full, new applicants are put on the waitlist automatically and see their waitlist position.
 
@@ -30,6 +30,8 @@ Until you finish these steps, `apply.html` runs in **demo mode** and only saves 
    Commit and push. GitHub Pages updates in about a minute.
 7. Test: open `apply.html`, submit a test application, and check that a row appears in the sheet. Then delete the test row.
 
+If you already deployed an earlier version of this script, add an **Other category** column (or redeploy a new version so the script can create a fresh tab). Existing **Categories** columns continue to receive a comma-separated list, for example `Home & Kitchen, Beauty & Skincare`.
+
 ### Changing the script later
 
 After editing the script, go to **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy**. The URL stays the same. If you create a *New deployment* instead, the URL changes and you must update `js/apply.config.js`.
@@ -50,14 +52,14 @@ const TABS = { supplier: 'Suppliers', reseller: 'Resellers' };
 
 const BASE_COLS = ['Timestamp', 'Status', 'Position', 'Referral code', 'Referred by', 'Referrals', 'Review'];
 const FIELDS = {
-  supplier: ['businessName', 'contactName', 'whatsapp', 'city', 'categories', 'skus', 'monthlyOrders',
+  supplier: ['businessName', 'contactName', 'whatsapp', 'city', 'categories', 'otherCategory', 'skus', 'monthlyOrders',
              'couriers', 'sellsOn', 'hasVideos', 'dispatch48h'],
-  reseller: ['contactName', 'whatsapp', 'city', 'storeType', 'monthlyOrders', 'categories',
+  reseller: ['contactName', 'whatsapp', 'city', 'storeType', 'monthlyOrders', 'categories', 'otherCategory',
              'deliveryRatio', 'wouldPay'],
 };
 const LABELS = {
   businessName: 'Business name', contactName: 'Contact name', whatsapp: 'WhatsApp', city: 'City',
-  categories: 'Categories', skus: 'SKUs', monthlyOrders: 'Monthly orders', couriers: 'Couriers',
+  categories: 'Categories', otherCategory: 'Other category', skus: 'SKUs', monthlyOrders: 'Monthly orders', couriers: 'Couriers',
   sellsOn: 'Sells online on', hasVideos: 'Has product videos', dispatch48h: 'Dispatch in 24-48h',
   storeType: 'Store type', deliveryRatio: 'Delivery ratio', wouldPay: 'Would pay',
 };

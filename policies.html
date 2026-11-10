@@ -47,6 +47,19 @@
         <a class="btn-ghost btn-sm mt-3" href="reseller/account-health.html">See the reseller dashboard</a>
       </section>
       <section class="card p-6" id="content"><h2 class="font-semibold">Content and video-use policy</h2><p class="text-sm text-muted mt-2">Suppliers may only upload videos they own, or have licensed, and must declare those rights. They set permissions per video: allowed in the reseller store, allowed in paid ads, and whether a watermark is required. Resellers may import and use a video only under those permissions. Using a video without permission, stripping a required watermark, or ripping another supplier's content is an IP / content-policy violation. A report and takedown flow hides the asset while it is reviewed; repeats lead to restriction. Trends does not pull videos from wholesalers who have not joined the platform.</p></section>
+            <section class="card p-6" id="prohibited"><h2 class="font-semibold">Prohibited items</h2>
+        <p class="text-sm text-muted mt-2">These categories are not allowed on <span data-brand></span>. Do not apply to sell them, and do not list them. Listing a prohibited item is an Account Health violation and can lead to restriction or termination.</p>
+        <ul class="text-sm mt-3 space-y-1.5 list-disc pl-5" id="prohibited-list">
+          <li><strong>Medicines and prescription drugs</strong> <span class="ur-hint">ادویات اور نسخے کی دوائیں</span></li>
+          <li><strong>Weapons</strong> <span class="ur-hint">ہتھیار</span></li>
+          <li><strong>Counterfeit or replica brands</strong> <span class="ur-hint">نقل یا جعلی برانڈز</span></li>
+          <li><strong>Adult items</strong> <span class="ur-hint">بالغ مواد</span></li>
+          <li><strong>Hazardous or flammable goods</strong> <span class="ur-hint">خطرناک یا آتش گیر اشیاء</span></li>
+          <li><strong>Live animals</strong> <span class="ur-hint">زندہ جانور</span></li>
+          <li><strong>Tobacco and vapes</strong> <span class="ur-hint">تمباکو اور ویپس</span></li>
+        </ul>
+        <p class="text-sm text-muted mt-3">Packaged, non-perishable grocery and health foods are allowed. Loose or fresh food, and anything that needs a pharmacy licence, is not.</p>
+      </section>
       <section class="card p-6" id="privacy"><h2 class="font-semibold">Privacy</h2><p class="text-sm text-muted mt-2">We store CNIC / NTN documents for KYC, phone numbers for OTP and confirmation, and order data for fulfillment. This prototype does not collect real personal data — do not upload genuine CNIC images here.</p></section>
       <section class="card p-6" id="help"><h2 class="font-semibold">Help</h2><p class="text-sm text-muted mt-2">Live product will have an AI chatbot with human escalation. In this demo, use the in-app toasts as stand-ins, or open the <a class="underline" href="admin/exceptions.html">admin exception queue</a>.</p></section>
     </div>
@@ -54,9 +67,14 @@
   <div id="site-footer"></div>
 
   <script src="./js/data.js"></script>
+  <script src="./js/categories.js"></script>
   <script src="./js/ui.js"></script>
   <script src="./js/layout.js"></script>
   
 
-<script>document.title = BRAND.name + " — Policies and help";</script>
+<script>
+  document.title = BRAND.name + " — Policies and help";
+  var pl = document.getElementById("prohibited-list");
+  if (pl && window.TrendsCats) pl.innerHTML = TrendsCats.prohibitedListHtml();
+</script>
 </body></html>

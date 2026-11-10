@@ -614,3 +614,85 @@ label.field { display: block; font-size: 0.8rem; font-weight: 650; margin-bottom
 .track-card.on { border-color: var(--color-primary); box-shadow: var(--shadow-md); }
 .ratio-916 { aspect-ratio: 9/16; }
 .ratio-11 { aspect-ratio: 1/1; }
+
+/* ===== Categories + free-application note ===== */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (min-width: 640px) {
+  .cat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .cat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.cat-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 12px 12px 10px;
+  border: 1.5px solid var(--color-line);
+  border-radius: 16px;
+  background: #fff;
+  text-align: left;
+  min-height: 92px;
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  position: relative;
+}
+.cat-tile .ico { font-size: 1.35rem; line-height: 1; margin-bottom: 2px; }
+.cat-tile .nm { font-weight: 700; font-size: 0.8rem; line-height: 1.25; }
+.cat-tile .ur-hint { font-size: 0.66rem; margin-top: 0; }
+.cat-tile:hover, .cat-tile:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+  outline: none;
+}
+.cat-tile input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+.cat-tile.on, .cat-tile:has(input:checked) {
+  border-color: var(--color-primary);
+  background: var(--color-primary-muted);
+  box-shadow: 0 0 0 1px var(--color-primary);
+}
+.cat-tile.on::after, .cat-tile:has(input:checked)::after {
+  content: "✓";
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.not-allowed-note {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  margin-top: 12px;
+  line-height: 1.5;
+}
+.free-apply {
+  background: var(--color-primary-muted);
+  border: 1px solid rgba(18, 34, 31, 0.08);
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+.free-apply p { margin: 0; font-size: 0.95rem; font-weight: 600; }
+.free-apply .ur-hint { font-weight: 400; }
+.free-apply.compact { padding: 12px 14px; }
+.free-apply.compact p { font-size: 0.88rem; font-weight: 600; }

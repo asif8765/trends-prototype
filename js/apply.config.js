@@ -10,5 +10,5 @@ window.APPLY_CONFIG = {
   spots: { supplier: 80, reseller: 120 },
   // Demo-mode counter start values (ignored when FORM_ENDPOINT returns live counts)
   demoTaken: { supplier: 57, reseller: 96 },
-  launchText: "launching early 2027",
+  launchText: "launching in the coming weeks",
 };

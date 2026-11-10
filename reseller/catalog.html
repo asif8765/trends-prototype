@@ -60,13 +60,30 @@
   </div>
 
   <script src="../js/data.js"></script>
+  <script src="../js/categories.js"></script>
   <script src="../js/ui.js"></script>
   <script src="../js/layout.js"></script>
   
 <script>
   document.title = BRAND.name + " — Catalog";
-  var cats = Array.from(new Set(DEMO.products.map(function(p){return p.cat;})));
-  cats.forEach(function(c){ var o=document.createElement("option"); o.textContent=c; document.getElementById("cat").appendChild(o); });
+  var catSel = document.getElementById("cat");
+  var official = (window.TrendsCats && TrendsCats.catalog()) || [];
+  if (official.length) {
+    official.forEach(function(c){
+      var o=document.createElement("option");
+      o.value=c.name; o.textContent=c.icon + " " + c.name;
+      catSel.appendChild(o);
+    });
+  } else {
+    Array.from(new Set(DEMO.products.map(function(p){return p.cat;}))).forEach(function(c){
+      var o=document.createElement("option"); o.textContent=c; catSel.appendChild(o);
+    });
+  }
+  var pre = new URLSearchParams(location.search).get("cat");
+  if (pre && window.TrendsCats) {
+    var hit = TrendsCats.bySlug(pre) || TrendsCats.byName(pre);
+    if (hit) catSel.value = hit.name;
+  }
   function render(){
     var q=document.getElementById("q").value.toLowerCase();
     var cat=document.getElementById("cat").value;

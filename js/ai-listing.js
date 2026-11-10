@@ -35,8 +35,8 @@
     ],
     desc: "A strong double-wall stainless steel bottle that keeps water cold all day in Pakistani summers and keeps tea hot on winter trips. The leak-proof lid and handle make it easy to carry in a school bag or car. Wipe clean; hand wash recommended.",
     descUr: "یہ مضبوط اسٹین لیس اسٹیل بوتل گرمیوں میں پانی کو پورا دن ٹھنڈا اور سردیوں میں چائے کو گرم رکھتی ہے۔ لیک پروف ڈھکن اور ہینڈل کی وجہ سے اسکول بیگ یا گاڑی میں رکھنا آسان ہے۔ چار رنگوں میں دستیاب۔",
-    category: "Home & Kitchen › Drinkware › Water bottles",
-    categories: ["Home & Kitchen › Drinkware › Water bottles", "Sports & Fitness › Bottles & shakers", "Kids › School supplies › Lunch & bottles"],
+    category: "Home & Kitchen",
+    categories: ["Home & Kitchen", "Sports & Fitness"],
     material: "Stainless steel (double wall)",
     colours: ["Black", "Steel", "Sky Blue", "Pink"],
     sizes: ["1 L"],
@@ -58,7 +58,7 @@
     ["Removing backgrounds and fixing light", "4 photos cleaned"],
     ["Writing the title and key points", "English done"],
     ["Writing the description in English and Urdu", "Urdu done"],
-    ["Choosing the category", "Home & Kitchen › Drinkware"],
+    ["Choosing the category", "Home & Kitchen"],
     ["Finding colours, sizes and material", "4 colours · 1 size"],
     ["Adding search tags", "9 tags"],
     ["Checking prices of similar items", "37 matches · Rs 820–950 wholesale"],
@@ -80,14 +80,14 @@
     ["Policy check", "2 items need your attention", true],
   ];
   var BULK = [
-    { e: "🧴", t: "Insulated Steel Water Bottle 1L", c: "Drinkware", r: "Rs 820–950", conf: "hi", st: "ready" },
-    { e: "🍳", t: "Non-stick Frying Pan 26cm with Glass Lid", c: "Cookware", r: "Rs 1,350–1,600", conf: "hi", st: "ready" },
-    { e: "🥣", t: "Melamine Bowl Set — 6 pcs", c: "Dinnerware", r: "Rs 640–760", conf: "md", st: "ready" },
-    { e: "🔪", t: "Stainless Kitchen Knife Set — 5 pcs with Stand", c: "Kitchen tools", r: "Rs 980–1,150", conf: "md", st: "flag", flag: "Knives: age-check label needed" },
-    { e: "🧺", t: "Foldable Laundry Basket — Large", c: "Home storage", r: "Rs 520–640", conf: "hi", st: "ready" },
-    { e: "☕", t: "Ceramic Mug Set — 4 pcs", c: "Drinkware", r: "Rs 700–820", conf: "md", st: "ready" },
-    { e: "🕯️", t: "Scented Candle Jar Set", c: "Home décor", r: "Rs 450–590", conf: "lo", st: "flag", flag: "Brand name “Bath & Body” in photo — remove" },
-    { e: "🧽", t: "Kitchen Sponge & Scrubber Pack — 12 pcs", c: "Cleaning", r: "Rs 210–280", conf: "hi", st: "ready" },
+    { e: "🧴", t: "Insulated Steel Water Bottle 1L", c: "Home & Kitchen", r: "Rs 820–950", conf: "hi", st: "ready" },
+    { e: "🍳", t: "Non-stick Frying Pan 26cm with Glass Lid", c: "Home & Kitchen", r: "Rs 1,350–1,600", conf: "hi", st: "ready" },
+    { e: "🥣", t: "Melamine Bowl Set — 6 pcs", c: "Home & Kitchen", r: "Rs 640–760", conf: "md", st: "ready" },
+    { e: "🔪", t: "Stainless Kitchen Knife Set — 5 pcs with Stand", c: "Home & Kitchen", r: "Rs 980–1,150", conf: "md", st: "flag", flag: "Knives: age-check label needed" },
+    { e: "🧺", t: "Foldable Laundry Basket — Large", c: "Home Decor & Bedding", r: "Rs 520–640", conf: "hi", st: "ready" },
+    { e: "☕", t: "Ceramic Mug Set — 4 pcs", c: "Home & Kitchen", r: "Rs 700–820", conf: "md", st: "ready" },
+    { e: "🕯️", t: "Scented Candle Jar Set", c: "Home Decor & Bedding", r: "Rs 450–590", conf: "lo", st: "flag", flag: "Brand name “Bath & Body” in photo — remove" },
+    { e: "🧽", t: "Kitchen Sponge & Scrubber Pack — 12 pcs", c: "Home & Kitchen", r: "Rs 210–280", conf: "hi", st: "ready" },
   ];
 
   // ---------- helpers ----------
@@ -164,7 +164,11 @@
     $("r-bullets").value = AI.bullets.join("\n");
     $("r-desc").value = AI.desc;
     $("r-desc-ur").value = AI.descUr;
-    $("r-cat").innerHTML = AI.categories.map(function (c) { return "<option" + (c === AI.category ? " selected" : "") + ">" + c + "</option>"; }).join("");
+    if (window.TrendsCats) {
+      $("r-cat").innerHTML = TrendsCats.optionsHtml(AI.category);
+    } else {
+      $("r-cat").innerHTML = AI.categories.map(function (c) { return "<option" + (c === AI.category ? " selected" : "") + ">" + c + "</option>"; }).join("");
+    }
     $("r-material").value = AI.material;
     $("r-resale").value = AI.resale;
     $("r-map").value = AI.map;
